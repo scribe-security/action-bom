@@ -8,20 +8,24 @@ Action
 ## Other actions
 * [bom - action](https://github.com/scribe-security/action-bom/README.md)
 * [verify - action](https://github.com/scribe-security/action-verify/README.md)
+* [integrity report - action](https://github.com/scribe-security/action-report/README.md)
 * [installer - action](https://github.com/scribe-security/action-installer/README.md)
 
 ## Bom action
-The action invokes a containerized `gensbom` sub-command `bom`. 
+Action for `gensbom bom`.
 The command allows users to generate and manage SBOMs.
 - GitHub-specific context attached to all SBOMs (GIT_URL, JOB_ID, JOB_NAME .. etc)
-- Signing SBOMs, supporting Sigstore keyless flow while using GitHub's workload auth ODIC identity.
-- Generates detailed SBOMs for images, directories, files and git repositories. 
+- Signing SBOMs, SLSA provenance, supporting Sigstore keyless flow while using GitHub's workload auth ODIC identity.
+- Generates detailed SBOMs, SLSA provenance for images, directories, files and git repositories targets. 
 - Store and manage SBOMs on Scribe service.
 - Attach SBOM in your CI or releases.
 - Generate SBOM directly from your private OCI registry support.
 - Customizable SBOM with environments, labels, sections, etc.
 - Attach external reports to your SBOM.
-- Generate In-Toto attestation, statement or predicate for your SBOMs.
+- Generate In-Toto attestation, statement or predicates.
+
+> action is containerized which limites the ability to generate sboms outside of the workflow working dir.
+To overcome the limitation install tool directly - [installer - action](https://github.com/scribe-security/action-installer/README.md)
 
 ### Input arguments
 ```yaml
@@ -99,7 +103,7 @@ provide a custom path using `config` input argument.
 See detailed [documentation -](docs/configuration.md) config](docs/configuration.md)
 
 You may add a `.cocosign.yaml` file to your repository or pass it with `--`config` \
-for more [Cocosign configuration](https://github.com/scribe-security/cocosign)
+<!-- for more [Cocosign configuration](https://github.com/scribe-security/cocosign) -->
 
 
 ## Attestations 
@@ -115,7 +119,7 @@ Use default configuration path `.cocosign.yaml`, or
 provide custom path using `attest-config` input argument.
 
 See details [documentation - attestation](docs/attestations.md) \
-Source see [cocosign](https://github.com/scribe-security/cocosign), attestation manager
+<!-- Source see [cocosign](https://github.com/scribe-security/cocosign), attestation manager -->
 
 
 
