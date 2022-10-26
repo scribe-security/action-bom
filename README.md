@@ -1,9 +1,13 @@
 ---
 title: Bom
 ---
-# Scribe GitHub actions - `gensbom bom`
-Scribe offers GitHub actions for embedding evidence collecting and integrity verification to your workflows. \
-Action 
+# Scribe action for `gensbom bom`
+Scribe offers GitHub actions for embedding evidence collecting and validated integrity of your supply chain. \
+
+`gensbom bom` is used to collect evidence and generate an SBOM. \
+
+Further documentation [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
+
 
 ## Other actions
 * [bom - action](https://github.com/scribe-security/action-bom/README.md)
@@ -121,13 +125,15 @@ provide custom path using `attest-config` input argument.
 See details [documentation - attestation](docs/attestations.md) \
 <!-- Source see [cocosign](https://github.com/scribe-security/cocosign), attestation manager -->
 
-
-
 ## .gitignore
 Recommended to add output directory value to your .gitignore file.
 By default add `**/scribe` to your `.gitignore`.
 
 # Integrations
+
+## Before you begin
+See [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
+
 ## Scribe service integration
 Scribe provides a set of services to store, verify and manage the supply chain integrity. \
 Following are some integration examples.
