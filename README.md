@@ -1,10 +1,10 @@
 ---
 title: Bom
 ---
-# Scribe action for `gensbom bom`
-Scribe offers GitHub actions for embedding evidence collecting and validated integrity of your supply chain. \
+# Scribe Github Action for `gensbom bom`
+Scribe offers GitHub Actions for embedding evidence collecting and validated integrity of your supply chain.
 
-`gensbom bom` is used to collect evidence and generate an SBOM. \
+Use `gensbom bom` to collect evidence and generate an SBOM.
 
 Further documentation [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
@@ -710,7 +710,7 @@ Full job example of a directory signing and verifying flow.
 Install gensbom as a tool
 ```YAML
 - name: install gensbom
-  uses: scribe-security/actions/gensbom/installer@master
+  uses: scribe-security/action-installer@master
 
 - name: gensbom run
   run: |
@@ -725,7 +725,7 @@ Install gensbom as a tool
 Install Valint as a tool
 ```YAML
 - name: install gensbom
-  uses: scribe-security/actions/gensbom/installer@master
+  uses: scribe-security/action-installer@master
   with:
     tool: valint
 
