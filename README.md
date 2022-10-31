@@ -9,13 +9,13 @@ Use `gensbom bom` to collect evidence and generate an SBOM.
 Further documentation [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
 
-## Other actions
+## Other Actions
 * [bom - action](https://github.com/scribe-security/action-bom/README.md)
 * [verify - action](https://github.com/scribe-security/action-verify/README.md)
 * [integrity report - action](https://github.com/scribe-security/action-report/README.md)
 * [installer - action](https://github.com/scribe-security/action-installer/README.md)
 
-## Bom action
+## Bom Action
 Action for `gensbom bom`.
 The command allows users to generate and manage SBOMs.
 - GitHub-specific context attached to all SBOMs (GIT_URL, JOB_ID, JOB_NAME .. etc)
