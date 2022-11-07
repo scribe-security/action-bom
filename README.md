@@ -1,7 +1,7 @@
 ---
 title: Bom
 ---
-# Scribe GitHub actions - `gensbom bom`
+# Scribe GitHub actions - `valint bom`
 Scribe offers GitHub actions for embedding evidence collecting and integrity verification to your workflows. \
 Action 
 
@@ -12,7 +12,7 @@ Action
 * [installer - action](https://github.com/scribe-security/action-installer/README.md)
 
 ## Bom action
-Action for `gensbom bom`.
+Action for `valint bom`.
 The command allows users to generate and manage SBOMs.
 - GitHub-specific context attached to all SBOMs (GIT_URL, JOB_ID, JOB_NAME .. etc)
 - Signing SBOMs, SLSA provenance, supporting Sigstore keyless flow while using GitHub's workload auth ODIC identity.
@@ -45,7 +45,7 @@ To overcome the limitation install tool directly - [installer - action](https://
     default: cyclonedxjson
   output-directory:
     description: 'Report output directory'
-    default: ./scribe/gensbom
+    default: ./scribe/valint
   output-file:
     description: 'Output result to file'
   name:
@@ -65,7 +65,7 @@ To overcome the limitation install tool directly - [installer - action](https://
   attest-config:
     description: 'Attestation config map'
   attest-name:
-    description: 'Attestation config name (default "gensbom")'
+    description: 'Attestation config name (default "valint")'
   attest-default:
     description: 'Attestation default config, options=[sigstore sigstore-github x509]'
     default: sigstore-github
@@ -98,7 +98,7 @@ To overcome the limitation install tool directly - [installer - action](https://
 ```
 
 ## Configuration
-Use default configuration path `.gensbom.yaml`, or
+Use default configuration path `.valint.yaml`, or
 provide a custom path using `config` input argument.
 See detailed [documentation -](docs/configuration.md) config](docs/configuration.md)
 
@@ -132,13 +132,13 @@ By default add `**/scribe` to your `.gitignore`.
 Scribe provides a set of services to store, verify and manage the supply chain integrity. \
 Following are some integration examples.
 
-Scribe integrity flow - upload evidence using `gensbom` and download the integrity report using `valint`. \
+Scribe integrity flow - upload evidence using `valint` and download the integrity report using `valint`. \
 You may collect evidence anywhere in your workflows.
 
 <details>
   <summary>  Scribe integrity report - full workflow </summary>
 
-Full workflow example of a workflow, upload evidence using gensbom and download report using Valint.
+Full workflow example of a workflow, upload evidence using valint and download report using Valint.
 
 ```YAML
 name: example workflow
@@ -163,8 +163,8 @@ jobs:
           ref: refs/tags/v1.0.0-alpha.4
           path: mongo-express-scm
 
-      - name: gensbom Scm generate bom, upload to scribe
-        id: gensbom_bom_scm
+      - name: valint Scm generate bom, upload to scribe
+        id: valint_bom_scm
         uses: scribe-security/action-bom@master
         with:
            type: dir
@@ -182,8 +182,8 @@ jobs:
           push: true
           tags: mongo-express:1.0.0-alpha.4
 
-      - name: gensbom Image generate bom, upload to scribe
-        id: gensbom_bom_image
+      - name: valint Image generate bom, upload to scribe
+        id: valint_bom_image
         uses: scribe-security/action-bom@master
         with:
            target: 'mongo-express:1.0.0-alpha.4'
@@ -207,8 +207,8 @@ jobs:
         with:
           name: scribe-reports
           path: |
-            ${{ steps.gensbom_bom_scm.outputs.OUTPUT_PATH }}
-            ${{ steps.gensbom_bom_image.outputs.OUTPUT_PATH }}
+            ${{ steps.valint_bom_scm.outputs.OUTPUT_PATH }}
+            ${{ steps.valint_bom_image.outputs.OUTPUT_PATH }}
             ${{ steps.valint_report.outputs.OUTPUT_PATH }}
 ```
 </details>
@@ -217,7 +217,7 @@ jobs:
 <details>
   <summary>  Scribe integrity report - Multi workflow </summary>
 
-Full workflow example of a workflow, upload evidence using gensbom and download report using valint
+Full workflow example of a workflow, upload evidence using valint and download report using valint
 
 ```YAML
 name: example workflow
@@ -249,8 +249,8 @@ jobs:
           push: true
           tags: mongo-express:1.0.0-alpha.4
 
-      - name: gensbom Image generate bom, upload to scribe
-        id: gensbom_bom_image
+      - name: valint Image generate bom, upload to scribe
+        id: valint_bom_image
         uses: scribe-security/action-bom@master
         with:
            target: 'mongo-express:1.0.0-alpha.4'
@@ -274,8 +274,8 @@ jobs:
         with:
           name: scribe-reports
           path: |
-            ${{ steps.gensbom_bom_scm.outputs.OUTPUT_PATH }}
-            ${{ steps.gensbom_bom_image.outputs.OUTPUT_PATH }}
+            ${{ steps.valint_bom_scm.outputs.OUTPUT_PATH }}
+            ${{ steps.valint_bom_image.outputs.OUTPUT_PATH }}
             ${{ steps.valint_report.outputs.OUTPUT_PATH }}
 ```
 </details>
@@ -370,7 +370,7 @@ Custom metadata added to SBOM
 Data will be included in the signed payload when the output is an attestation.
 ```YAML
 - name: Generate cyclonedx json SBOM - add metadata - labels, envs, name
-  id: gensbom_labels
+  id: valint_labels
   uses: scribe-security/action-bom@master
   with:
       target: 'busybox:latest'
@@ -392,7 +392,7 @@ Data will be included in the signed payload when the output is an attestation.
 Using action `output_path` you can access the generated SBOM and store it as an artifact.
 ```YAML
 - name: Generate cyclonedx json SBOM
-  id: gensbom_json
+  id: valint_json
   uses: scribe-security/action-bom@master
   with:
     target: 'busybox:latest'
@@ -400,8 +400,8 @@ Using action `output_path` you can access the generated SBOM and store it as an 
 
 - uses: actions/upload-artifact@v2
   with:
-    name: gensbom-busybox-output-test
-    path: ${{ steps.gensbom_json.outputs.OUTPUT_PATH }}
+    name: valint-busybox-output-test
+    path: ${{ steps.valint_json.outputs.OUTPUT_PATH }}
 ``` 
 </details>
 
@@ -411,7 +411,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
 
 ```YAML
 - name: Generate SLSA provenance statement
-  id: gensbom_slsa_statement
+  id: valint_slsa_statement
   uses: scribe-security/action-bom@master
   with:
     target: 'busybox:latest'
@@ -420,7 +420,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
 - uses: actions/upload-artifact@v2
   with:
     name: scribe-evidence
-    path: ${{ steps.gensbom_slsa_statement.outputs.OUTPUT_PATH }}
+    path: ${{ steps.valint_slsa_statement.outputs.OUTPUT_PATH }}
 ``` 
 </details>
 
@@ -479,8 +479,8 @@ Note directory must be mapped to working dir for actions to access (containerize
     mkdir testdir
     echo "test" > testdir/test.txt
 
-- name: gensbom attest dir
-  id: gensbom_attest_dir
+- name: valint attest dir
+  id: valint_attest_dir
   uses: scribe-security/action-bom@master
   with:
     type: dir
@@ -503,7 +503,7 @@ job_example:
   permissions:
     id-token: write
   steps:
-    - name: gensbom attest
+    - name: valint attest
     uses: scribe-security/action-bom@master
     with:
         target: 'busybox:latest'
@@ -525,7 +525,7 @@ job_example:
   permissions:
     id-token: write
   steps:
-    - name: gensbom attest
+    - name: valint attest
     uses: scribe-security/action-bom@master
     with:
         target: 'busybox:latest'
@@ -539,11 +539,11 @@ job_example:
 Verify targets against a signed attestation. \
 Note: `docker` in target `type` field (is not accessible because it requires docker daemon (containerized actions) \
 Default attestation config: `sigstore-config` - sigstore (Fulcio, Rekor).
-gensbom will look for both a bom or slsa attestation to verify against
+valint will look for both a bom or slsa attestation to verify against
 
 ```YAML
-- name: gensbom verify
-  uses: scribe-security/actions/gensbom/verify@master
+- name: valint verify
+  uses: scribe-security/actions/valint/verify@master
   with:
     target: 'busybox:latest'
 ``` 
@@ -556,11 +556,11 @@ gensbom will look for both a bom or slsa attestation to verify against
 Verify targets against a signed attestation. \
 Note: `docker` in target `type` field (is not accessible because it requires docker daemon (containerized actions) \
 Default attestation config: `sigstore-config` - sigstore (Fulcio, Rekor).
-gensbom will look for both a bom or slsa attestation to verify against
+valint will look for both a bom or slsa attestation to verify against
 
 ```YAML
-- name: gensbom verify
-  uses: scribe-security/actions/gensbom/verify@master
+- name: valint verify
+  uses: scribe-security/actions/valint/verify@master
   with:
     target: 'busybox:latest'
     input-format: attest-slsa
@@ -574,7 +574,7 @@ gensbom will look for both a bom or slsa attestation to verify against
 Full job example of a image signing and verifying flow.
 
 ```YAML
- gensbom-busybox-test:
+ valint-busybox-test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -586,8 +586,8 @@ Full job example of a image signing and verifying flow.
         with:
           fetch-depth: 0
 
-      - name: gensbom attest
-        id: gensbom_attest
+      - name: valint attest
+        id: valint_attest
         uses: scribe-security/action-bom@master
         with:
            target: 'busybox:latest'
@@ -595,17 +595,17 @@ Full job example of a image signing and verifying flow.
            format: attest
            force: true
 
-      - name: gensbom verify
-        id: gensbom_verify
-        uses: scribe-security/actions/gensbom/verify@master
+      - name: valint verify
+        id: valint_verify
+        uses: scribe-security/actions/valint/verify@master
         with:
            target: 'busybox:latest'
            verbose: 2
 
       - uses: actions/upload-artifact@v2
         with:
-          name: gensbom-busybox-test
-          path: gensbom_reports
+          name: valint-busybox-test
+          path: valint_reports
 ``` 
 
 </details>
@@ -616,7 +616,7 @@ Full job example of a image signing and verifying flow.
 Full job example of a image signing and verifying flow.
 
 ```YAML
- gensbom-busybox-test:
+ valint-busybox-test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -628,8 +628,8 @@ Full job example of a image signing and verifying flow.
         with:
           fetch-depth: 0
 
-      - name: gensbom attest slsa
-        id: gensbom_attest
+      - name: valint attest slsa
+        id: valint_attest
         uses: scribe-security/action-bom@master
         with:
            target: 'busybox:latest'
@@ -637,9 +637,9 @@ Full job example of a image signing and verifying flow.
            format: attest-slsa
            force: true
 
-      - name: gensbom verify attest slsa
-        id: gensbom_verify
-        uses: scribe-security/actions/gensbom/verify@master
+      - name: valint verify attest slsa
+        id: valint_verify
+        uses: scribe-security/actions/valint/verify@master
         with:
            target: 'busybox:latest'
            input-format: attest-slsa
@@ -647,8 +647,8 @@ Full job example of a image signing and verifying flow.
 
       - uses: actions/upload-artifact@v2
         with:
-          name: gensbom-busybox-test
-          path: gensbom_reports
+          name: valint-busybox-test
+          path: valint_reports
 ``` 
 
 </details>
@@ -659,7 +659,7 @@ Full job example of a image signing and verifying flow.
 Full job example of a directory signing and verifying flow.
 
 ```YAML
-  gensbom-dir-test:
+  valint-dir-test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -671,8 +671,8 @@ Full job example of a directory signing and verifying flow.
         with:
           fetch-depth: 0
 
-      - name: gensbom attest workdir
-        id: gensbom_attest_dir
+      - name: valint attest workdir
+        id: valint_attest_dir
         uses: scribe-security/action-bom@master
         with:
            type: dir
@@ -681,9 +681,9 @@ Full job example of a directory signing and verifying flow.
            format: attest
            force: true
 
-      - name: gensbom verify workdir
-        id: gensbom_verify_dir
-        uses: scribe-security/actions/gensbom/verify@master
+      - name: valint verify workdir
+        id: valint_verify_dir
+        uses: scribe-security/actions/valint/verify@master
         with:
            type: dir
            target: '/GitHub/workspace/'
@@ -691,25 +691,25 @@ Full job example of a directory signing and verifying flow.
       
       - uses: actions/upload-artifact@v2
         with:
-          name: gensbom-workdir-reports
+          name: valint-workdir-reports
           path: |
-            gensbom_reports      
+            valint_reports      
 ``` 
 
 </details>
 
 <details>
-  <summary> Install gensbom (tool) </summary>
+  <summary> Install valint (tool) </summary>
 
-Install gensbom as a tool
+Install valint as a tool
 ```YAML
-- name: install gensbom
-  uses: scribe-security/actions/gensbom/installer@master
+- name: install valint
+  uses: scribe-security/actions/valint/installer@master
 
-- name: gensbom run
+- name: valint run
   run: |
-    gensbom --version
-    gensbom bom busybox:latest -vv
+    valint --version
+    valint bom busybox:latest -vv
 ``` 
 </details>
 
@@ -718,8 +718,8 @@ Install gensbom as a tool
 
 Install Valint as a tool
 ```YAML
-- name: install gensbom
-  uses: scribe-security/actions/gensbom/installer@master
+- name: install valint
+  uses: scribe-security/actions/valint/installer@master
   with:
     tool: valint
 
