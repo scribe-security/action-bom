@@ -1,4 +1,4 @@
-name: 'Gensbom: bom'
+name: 'Valint: bom'
 description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
 author: Mikey Strauss
 outputs:
@@ -20,7 +20,7 @@ inputs:
     description: 'Sbom formatter, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa]'
   output-directory:
     description: 'Report output directory'
-    default: ./scribe/gensbom
+    default: ./scribe/valint
   output-file:
     description: 'Output result to file'
   product-key:
@@ -39,7 +39,7 @@ inputs:
   attest-config:
     description: 'Attestation config map'
   attest-name:
-    description: 'Attestation config name (default "gensbom")'
+    description: 'Attestation config name (default "valint")'
   attest-default:
     description: 'Attestation default config, options=[sigstore sigstore-github x509]'
     default: sigstore-github
@@ -63,7 +63,7 @@ inputs:
 
 runs:
   using: docker
-  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/gensbom:dev-latest
+  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
   args:
     - bom
     - ${{ inputs.type }}:${{ inputs.target }}

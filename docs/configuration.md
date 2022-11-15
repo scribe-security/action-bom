@@ -1,16 +1,16 @@
 # Configuration 
 
 Configuration search paths:
-- .gensbom.yaml
-- .gensbom/gensbom.yaml
-- ~/.gensbom.yaml
-- \<k\>/gensbom/gensbom.yaml
+- .valint.yaml
+- .valint/valint.yaml
+- ~/.valint.yaml
+- \<k\>/valint/valint.yaml
 
 For a custom configuration location use `--config` flag with any command.
 
 Configuration format and default values.
 ```yaml
-output-directory: $XDG_CACHE_HOME/gensbom
+output-directory: $XDG_CACHE_HOME/valint
 scribe:
   auth:
     login-url: https://scribesecurity-production.us.auth0.com
