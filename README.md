@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -176,7 +176,7 @@ jobs:
            scribe-client-secret: ${{ secrets.client-secret }}
 
       - name: Build and push remote
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -203,7 +203,7 @@ jobs:
            scribe-client-id: ${{ secrets.client-id }}
            scribe-client-secret: ${{ secrets.client-secret }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: scribe-reports
           path: |
@@ -232,7 +232,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -243,7 +243,7 @@ jobs:
           path: mongo-express-scm
 
       - name: Build and push remote
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -270,7 +270,7 @@ jobs:
            scribe-client-id: ${{ secrets.client-id }}
            scribe-client-secret: ${{ secrets.client-secret }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: scribe-reports
           path: |
@@ -398,7 +398,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
     target: 'busybox:latest'
     format: json
 
-- uses: actions/upload-artifact@v2
+- uses: actions/upload-artifact@v3
   with:
     name: valint-busybox-output-test
     path: ${{ steps.valint_json.outputs.OUTPUT_PATH }}
@@ -417,7 +417,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
     target: 'busybox:latest'
     format: statement-slsa
 
-- uses: actions/upload-artifact@v2
+- uses: actions/upload-artifact@v3
   with:
     name: scribe-evidence
     path: ${{ steps.valint_slsa_statement.outputs.OUTPUT_PATH }}
@@ -430,7 +430,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
 Create SBOM from local `docker save ...` output.
 ```YAML
 - name: Build and save local docker archive
-  uses: docker/build-push-action@v2
+  uses: docker/build-push-action@v3
   with:
     context: .
     file: .GitHub/workflows/fixtures/Dockerfile_stub
@@ -452,7 +452,7 @@ Create SBOM from the local oci archive.
 
 ```YAML
 - name: Build and save local oci archive
-  uses: docker/build-push-action@v2
+  uses: docker/build-push-action@v3
   with:
     context: .
     file: .GitHub/workflows/fixtures/Dockerfile_stub
@@ -582,7 +582,7 @@ Full job example of a image signing and verifying flow.
       id-token: write
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -602,7 +602,7 @@ Full job example of a image signing and verifying flow.
            target: 'busybox:latest'
            verbose: 2
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: valint-busybox-test
           path: valint_reports
@@ -624,7 +624,7 @@ Full job example of a image signing and verifying flow.
       id-token: write
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -645,7 +645,7 @@ Full job example of a image signing and verifying flow.
            input-format: attest-slsa
            verbose: 2
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: valint-busybox-test
           path: valint_reports
@@ -667,7 +667,7 @@ Full job example of a directory signing and verifying flow.
       id-token: write
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -689,7 +689,7 @@ Full job example of a directory signing and verifying flow.
            target: '/GitHub/workspace/'
            verbose: 2
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: valint-workdir-reports
           path: |
