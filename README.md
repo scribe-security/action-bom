@@ -6,7 +6,7 @@ Scribe offers GitHub Actions for embedding evidence collecting and validated int
 
 Use `gensbom bom` to collect evidence and generate an SBOM.
 
-Further documentation [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
+Further documentation regarding [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
 
 ## Other Actions
@@ -18,18 +18,18 @@ Further documentation [Github integration](https://scribe-security.netlify.app/d
 ## Bom Action
 Action for `gensbom bom`.
 The command allows users to generate and manage SBOMs.
-- GitHub-specific context attached to all SBOMs (GIT_URL, JOB_ID, JOB_NAME .. etc)
-- Signing SBOMs, SLSA provenance, supporting Sigstore keyless flow while using GitHub's workload auth ODIC identity.
-- Generates detailed SBOMs, SLSA provenance for images, directories, files and git repositories targets. 
-- Store and manage SBOMs on Scribe service.
+- GitHub-specific context attached to all SBOMs (includes GitHub specific descriptors: GIT_URL, JOB_ID, JOB_NAME .. etc)
+- Signing SBOMs, SLSA provenance objects, supporting Sigstore keyless flow while using GitHub's workload auth ODIC identity.
+- Generates detailed SBOMs, SLSA provenance objects for various types of targets: images, directories, files and git repositories targets. 
+- Store and manage SBOMs on the Scribe Service.
 - Attach SBOM in your CI or releases.
-- Generate SBOM directly from your private OCI registry support.
+- Generate an SBOM directly from your private OCI registry.
 - Customizable SBOM with environments, labels, sections, etc.
 - Attach external reports to your SBOM.
 - Generate In-Toto attestation, statement or predicates.
 
-> action is containerized which limites the ability to generate sboms outside of the workflow working dir.
-To overcome the limitation install tool directly - [installer - action](https://github.com/scribe-security/action-installer/README.md)
+> BOM Action is containerized which limites the ability to generate sboms outside of the workflow working dir.
+To overcome the limitation install the Gensbom tool directly - [installer - action](https://github.com/scribe-security/action-installer/README.md)
 
 ### Input arguments
 ```yaml
@@ -106,8 +106,8 @@ Use default configuration path `.gensbom.yaml`, or
 provide a custom path using `config` input argument.
 See detailed [documentation -](docs/configuration.md) config](docs/configuration.md)
 
-You may add a `.cocosign.yaml` file to your repository or pass it with `--`config` \
-<!-- for more [Cocosign configuration](https://github.com/scribe-security/cocosign) -->
+In order to configure signing-specific parameters, you may add a `.cocosign.yaml` file to your repository or pass it with `--`config`. \
+Learn more about [Cocosign configuration](https://github.com/scribe-security/cocosign) 
 
 
 ## Attestations 
@@ -126,7 +126,7 @@ See details [documentation - attestation](docs/attestations.md) \
 <!-- Source see [cocosign](https://github.com/scribe-security/cocosign), attestation manager -->
 
 ## .gitignore
-Recommended to add output directory value to your .gitignore file.
+It is recommended to add output directory value to your .gitignore file.
 By default add `**/scribe` to your `.gitignore`.
 
 # Integrations
@@ -135,8 +135,8 @@ By default add `**/scribe` to your `.gitignore`.
 See [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
 ## Scribe service integration
-Scribe provides a set of services to store, verify and manage the supply chain integrity. \
-Following are some integration examples.
+Scribe provides a set of cloud-based services to store, verify and manage the attestations and other kinds of records, enabling users to assure their supply-chain integrity. \
+Following are some practical integration examples of CI pipelines with the Scribe Service.
 
 Scribe integrity flow - upload evidence using `gensbom` and download the integrity report using `valint`. \
 You may collect evidence anywhere in your workflows.
