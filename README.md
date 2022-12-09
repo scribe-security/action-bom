@@ -11,9 +11,9 @@ Further documentation [Github integration](https://scribe-security.netlify.app/d
 
 
 ## Other Actions
-* [bom - action](https://github.com/scribe-security/action-bom/README.md)
-* [verify - action](https://github.com/scribe-security/action-verify/README.md)
-* [installer - action](https://github.com/scribe-security/action-installer/README.md)
+* [bom](https://github.com/scribe-security/action-bom/README.md)
+* [verify](https://github.com/scribe-security/action-verify/README.md)
+* [installer](https://github.com/scribe-security/action-installer/README.md)
 <!-- * [integrity report - action](https://github.com/scribe-security/action-report/README.md) -->
 
 ## Bom Action
@@ -89,13 +89,12 @@ To overcome the limitation install tool directly - [installer - action](https://
     description: 'Context dir' 
   components:
     description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
-
 ```
 
 ### Output arguments
 ```yaml
-  output-file:
-    description: 'Bom output file path'
+  OUTPUT_PATH:
+    description: 'evidence output file path'
 ```
 
 ### Usage
