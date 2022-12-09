@@ -58,7 +58,7 @@ inputs:
     description: 'Scribe auth audience' 
   context-dir:
     description: 'Context dir' 
-  components :
+  components:
     description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
 
 runs:
