@@ -6,13 +6,13 @@ outputs:
     description: 'Bom output file path'
 inputs:
   type:
-    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry]'
+    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
     default: registry
   target:
-    description: 'Target object name format=[<image:tag>, <dir_path>]'
+    description: 'Target object name format=[<image:tag>, <dir path>, <git url>]'
     required: true
   verbose:
-    description: 'Increase verbosity (-v = info, -vv = debug)'
+    description: 'Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug'
     default: 1
   config:
     description: 'Application config file'
@@ -58,7 +58,7 @@ inputs:
     description: 'Scribe auth audience' 
   context-dir:
     description: 'Context dir' 
-  components :
+  components:
     description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
 
 runs:
