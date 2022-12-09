@@ -2,7 +2,7 @@ name: 'Gensbom: bom'
 description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
 author: Mikey Strauss
 outputs:
-  output-file:
+  output-path:
     description: 'Bom output file path'
 inputs:
   type:
