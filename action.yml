@@ -2,8 +2,8 @@ name: 'Gensbom: bom'
 description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
 author: Mikey Strauss
 outputs:
-  output-path:
-    description: 'Bom output file path'
+  OUTPUT_PATH:
+    description: 'evidence output file path'
 inputs:
   type:
     description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
