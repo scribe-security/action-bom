@@ -9,7 +9,6 @@ Use `gensbom bom` to collect evidence and generate an SBOM.
 
 Further documentation [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
-
 ## Other Actions
 * [bom](https://github.com/scribe-security/action-bom/README.md)
 * [verify](https://github.com/scribe-security/action-verify/README.md)
@@ -17,20 +16,24 @@ Further documentation [Github integration](https://scribe-security.netlify.app/d
 <!-- * [integrity report - action](https://github.com/scribe-security/action-report/README.md) -->
 
 ## Bom Action
-Action for `gensbom bom`.
-The command allows users to generate and manage SBOMs.
-- GitHub-specific context attached to all SBOMs (GIT_URL, JOB_ID, JOB_NAME .. etc)
-- Signing SBOMs, SLSA provenance, supporting Sigstore keyless flow while using GitHub's workload auth ODIC identity.
-- Generates detailed SBOMs, SLSA provenance for images, directories, files and git repositories targets. 
-- Store and manage SBOMs on Scribe service.
-- Attach SBOM in your CI or releases.
-- Generate SBOM directly from your private OCI registry.
-- Customizable SBOM with environments, labels, sections, etc.
-- Attach external reports to your SBOM.
+Action for `gensbom bom`. <br />
+The command allows users to generate and manage evidence collection process.
+- CycloneDX SBOM and SLSA provenance evidence support. 
+- Generates detailed SBOMs for images, directories, files and git repositories targets.
+- Store and manage evidence on Scribe service.
+- Attach evidence in your CI, OCI or release service.
+- Generate evidence directly from your private OCI registry.
+- Extensive SBOM component relation graph including, file to package, file and package to layer, commit history and file to commit relations.
+- SBOM including package CPEs and Licensing information.
+- Customizable SBOM with environments, labels.
+- Customizable SBOM with your required component groups.
+- Attach any external reports to your SBOM.
 - Generate In-Toto attestation, statement or predicates.
+- Support Sigstore keyless verifying as well as [Github workload identity](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
+- Attach GitHub workflows [environment](https://docs.github.com/en/actions/learn-github-actions/environment-variables) context (git url , commit, workflow, job, run id ..).
 
-> action is containerized which limites the ability to generate sboms outside of the workflow working dir.
-To overcome the limitation install tool directly - [installer - action](https://github.com/scribe-security/action-installer/README.md)
+> Containerized actions limit's the ability to generate evidence on a target located outside the working directory (directory or git targets). <br />
+To overcome the limitation install tool directly - [installer](https://github.com/scribe-security/action-installer/README.md)
 
 ### Input arguments
 ```yaml
@@ -127,13 +130,15 @@ Select a custom configuration by providing `cocosign` field in the [configuratio
 See details [In-toto spec](https://github.com/in-toto/attestation)
 See details [attestations](docs/attestations.md)
 
+>By default Github actions use `sigstore-github` flow, Github provided workload identities, this will allow using the workflow identity (`token-id` permissions is required).
+
 ## Integrations
 
 ### Before you begin
 See [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
 ## Scribe service integration
-Scribe provides a set of services to store, verify and manage the supply chain integrity. \
+Scribe provides a set of services to store, verify and manage the supply chain integrity. <br />
 Following are some integration examples.
 
 ### Usage
@@ -147,7 +152,6 @@ Following are some integration examples.
     scribe-client-id: ${{ secrets.client-id }}
     scribe-client-secret: ${{ secrets.client-secret }}
 ```
-
 
 If you are using Github Actions as your Continuous Integration tool (CI), use these instructions to integrate Scribe into your workflows to protect your projects.
 
@@ -292,7 +296,10 @@ Data will be included in the signed payload when the output is an attestation.
 <details>
   <summary> Save as artifact (SBOM) </summary>
 
-Using action `output_path` you can access the generated SBOM and store it as an artifact.
+Using action `OUTPUT_PATH` output argument you can access the generated SBOM and store it as an artifact.
+
+> Use action `output-path: <my_custom_path>` input argument to set a custom output path.
+
 ```YAML
 - name: Generate cyclonedx json SBOM
   id: gensbom_json
@@ -310,7 +317,10 @@ Using action `output_path` you can access the generated SBOM and store it as an 
 
 <details>
   <summary> Save provenance statement as artifact (SLSA) </summary>
-Using action `output_path` you can access the generated SBOM and store it as an artifact.
+
+Using action `OUTPUT_PATH` output argument you can access the generated SBOM and store it as an artifact.
+
+> Use action `output-path: <my_custom_path>` input argument to set a custom output path.
 
 ```YAML
 - name: Generate SLSA provenance statement
@@ -322,7 +332,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
 
 - uses: actions/upload-artifact@v2
   with:
-    name: scribe-evidence
+    name: provenance
     path: ${{ steps.gensbom_slsa_statement.outputs.OUTPUT_PATH }}
 ``` 
 </details>
@@ -331,6 +341,7 @@ Using action `output_path` you can access the generated SBOM and store it as an 
   <summary> Docker archive image (SBOM) </summary>
 
 Create SBOM for local `docker save ...` output.
+
 ```YAML
 - name: Build and save local docker archive
   uses: docker/build-push-action@v2
@@ -360,7 +371,7 @@ Create SBOM for the local oci archive.
     context: .
     file: .GitHub/workflows/fixtures/Dockerfile_stub
     tags: scribesecuriy.jfrog.io/scribe-docker-public-local/stub_local:latest
-    outputs: type=docker,dest=stub_oci_local.tar
+    outputs: type=oci,dest=stub_oci_local.tar
 
 - name: Generate cyclonedx json SBOM
   uses: scribe-security/action-bom@master
@@ -432,7 +443,6 @@ By default the `sigstore-github` flow is used, GitHub workload identity and Sigs
 
 >Default attestation config **Required** `id-token` permission access. <br />
 
-
 ```YAML
 job_example:
   runs-on: ubuntu-latest
@@ -475,7 +485,7 @@ job_example:
 
 Verify targets against a signed attestation. <br />
 
-Default attestation config: `sigstore-config` - sigstore (Fulcio, Rekor). <br />
+Default attestation config: `sigstore-github` - sigstore (Fulcio, Rekor). <br />
 Gensbom will look for both a bom or slsa attestation to verify against.  <br />
 
 ```YAML
@@ -492,7 +502,7 @@ Gensbom will look for both a bom or slsa attestation to verify against.  <br />
 
 Verify targets against a signed attestation. <br />
 
-Default attestation config: `sigstore-config` - sigstore (Fulcio, Rekor). <br />
+Default attestation config: `sigstore-github` - sigstore (Fulcio, Rekor). <br />
 Gensbom will look for both a bom or slsa attestation to verify against. <br />
 
 ```YAML
