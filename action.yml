@@ -60,6 +60,9 @@ inputs:
     description: 'Context dir' 
   components:
     description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
+  final-artifact:
+    description: 'Mark as final artifact'
+    default: false
 
 runs:
   using: docker
@@ -89,6 +92,8 @@ runs:
     - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.context-dir && '--scribe.context-dir=' }}${{ inputs.context-dir }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
+    - ${{ inputs.force && '--final-artifact=' }}${{ inputs.force }}
+
 
 
 branding:
