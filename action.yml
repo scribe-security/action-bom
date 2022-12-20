@@ -1,4 +1,4 @@
-name: 'Gensbom: bom'
+name: 'bom'
 description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
 author: Mikey Strauss
 outputs:
