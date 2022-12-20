@@ -1,5 +1,5 @@
-name: 'bom'
-description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
+name: 'Scribe evidence generator'
+description: 'Generate Software Bill Of Materials (SBOM) for container images, filesystems and git repositories'
 author: Mikey Strauss
 outputs:
   OUTPUT_PATH:
