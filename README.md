@@ -41,7 +41,7 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
     default: registry
   target:
-    description: 'Target object name format=[<image:tag>, <dir path>, <git url>]'
+    description: 'Target object name format=[<image:tag>, dir:<dir_path>, <git_path>]'
     required: true
   verbose:
     description: 'Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug'
@@ -49,10 +49,10 @@ To overcome the limitation install tool directly - [installer](https://github.co
   config:
     description: 'Application config file'
   format:
-    description: 'Sbom formatter, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa]'
+    description: 'Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa]'
   output-directory:
-    description: 'Report output directory'
-    default: ./scribe/gensbom
+    description: 'Output directory path'
+    default: ./scribe/valint
   output-file:
     description: 'Output result to file'
   product-key:
@@ -63,6 +63,12 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Custom env'
   filter-regex:
     description: 'Filter out files by regex'
+  filter-scope:
+    description: 'Filter packages by scope'
+  package-type:
+    description: 'Select package type'
+  package-group:
+    description: 'Select package group'
   attach-regex:
     description: 'Attach files content by regex'
   force:
@@ -70,8 +76,6 @@ To overcome the limitation install tool directly - [installer](https://github.co
     default: false
   attest-config:
     description: 'Attestation config map'
-  attest-name:
-    description: 'Attestation config name (default "gensbom")'
   attest-default:
     description: 'Attestation default config, options=[sigstore sigstore-github x509]'
     default: sigstore-github
@@ -82,16 +86,10 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Scribe client id' 
   scribe-client-secret:
     description: 'Scribe access token' 
-  scribe-url:
-    description: 'Scribe url'
-  scribe-login-url:
-    description: 'Scribe auth login url' 
-  scribe-audience:
-    description: 'Scribe auth audience' 
   context-dir:
     description: 'Context dir' 
   components:
-    description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
+    description: 'Select sbom components groups, options=[metadata layers packages syft files dep commits] (default [metadata,layers,packages,syft,files,dep,commits]'
 ```
 
 ### Output arguments
@@ -318,7 +316,7 @@ Using action `OUTPUT_PATH` output argument you can access the generated SBOM and
 <details>
   <summary> Save provenance statement as artifact (SLSA) </summary>
 
-Using action `OUTPUT_PATH` output argument you can access the generated SBOM and store it as an artifact.
+Using action `OUTPUT_PATH` output argument you can access the generated SLSA provenance statement and store it as an artifact.
 
 > Use action `output-path: <my_custom_path>` input argument to set a custom output path.
 
@@ -503,7 +501,7 @@ Gensbom will look for both a bom or slsa attestation to verify against.  <br />
 Verify targets against a signed attestation. <br />
 
 Default attestation config: `sigstore-github` - sigstore (Fulcio, Rekor). <br />
-Gensbom will look for both a bom or slsa attestation to verify against. <br />
+Tool will look for sbom or slsa attestation to verify against. <br />
 
 ```YAML
 - name: gensbom verify
