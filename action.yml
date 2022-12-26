@@ -4,6 +4,10 @@ author: Mikey Strauss
 outputs:
   OUTPUT_PATH:
     description: 'evidence output file path'
+  slsa_path:
+    description: 'slsa evidence output file path'
+  sbom_path:
+    description: 'sbom evidence output file path'
 inputs:
   type:
     description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
@@ -65,7 +69,7 @@ inputs:
   context-dir:
     description: 'Context dir' 
   components:
-    description: 'Select sbom components groups, options=[metadata layers packages files dep]'
+    description: 'Select sbom components groups, options=[metadata layers packages syft files dep commits]'
   final-artifact:
     description: 'Mark as final artifact'
     default: false
