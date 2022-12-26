@@ -1,18 +1,18 @@
-name: 'Valint: bom'
-description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
+name: 'Scribe evidence generator'
+description: 'Generate Software Bill Of Materials (SBOM) for container images, filesystems and git repositories'
 author: Mikey Strauss
 outputs:
-  output-file:
-    description: 'Bom output file path'
+  OUTPUT_PATH:
+    description: 'evidence output file path'
 inputs:
   type:
-    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry]'
+    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
     default: registry
   target:
-    description: 'Target object name format=[<image:tag>, <dir_path>]'
+    description: 'Target object name format=[<image:tag>, <dir path>, <git url>]'
     required: true
   verbose:
-    description: 'Increase verbosity (-v = info, -vv = debug)'
+    description: 'Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug'
     default: 1
   config:
     description: 'Application config file'
@@ -65,10 +65,15 @@ inputs:
   context-dir:
     description: 'Context dir' 
   components:
-    description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
+    description: 'Select sbom components groups, options=[metadata layers packages files dep]'
   final-artifact:
     description: 'Mark as final artifact'
     default: false
+  oci: 
+    description: 'Enable OCI store'
+    default: false
+  oci-repo:
+    description: 'Select OCI custom attestation repo'
 
 runs:
   using: docker
@@ -102,6 +107,8 @@ runs:
     - ${{ inputs.context-dir && '--scribe.context-dir=' }}${{ inputs.context-dir }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
     - ${{ inputs.final-artifact && '--final-artifact=' }}${{ inputs.final-artifact }}
+    - ${{ inputs.oci && '--oci=' }}${{ inputs.oci }}
+    - ${{ inputs.oci-repo && '--oci-repo=' }}${{ inputs.oci-repo }}
 
 
 
