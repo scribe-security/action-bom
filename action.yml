@@ -1,18 +1,22 @@
-name: 'Gensbom: bom'
-description: 'Generates a Software Bill Of Materials (SBOM) from container images and filesystems'
+name: 'Scribe evidence generator'
+description: 'Generate Software Bill Of Materials (SBOM) for container images, filesystems and git repositories'
 author: Mikey Strauss
 outputs:
-  output-file:
-    description: 'Bom output file path'
+  OUTPUT_PATH:
+    description: 'evidence output file path'
+  slsa_path:
+    description: 'slsa evidence output file path'
+  sbom_path:
+    description: 'sbom evidence output file path'
 inputs:
   type:
-    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry]'
+    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
     default: registry
   target:
-    description: 'Target object name format=[<image:tag>, <dir_path>]'
+    description: 'Target object name format=[<image:tag>, <dir path>, <git url>]'
     required: true
   verbose:
-    description: 'Increase verbosity (-v = info, -vv = debug)'
+    description: 'Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug'
     default: 1
   config:
     description: 'Application config file'
@@ -20,7 +24,7 @@ inputs:
     description: 'Sbom formatter, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa]'
   output-directory:
     description: 'Report output directory'
-    default: ./scribe/gensbom
+    default: ./scribe/valint
   output-file:
     description: 'Output result to file'
   product-key:
@@ -31,6 +35,12 @@ inputs:
     description: 'Custom env'
   filter-regex:
     description: 'Filter out files by regex'
+  filter-scope:
+    description: 'Filter packages by scope'
+  package-type:
+    description: 'Select package type'
+  package-group:
+    description: 'Select package group'
   attach-regex:
     description: 'Attach files content by regex'
   force:
@@ -39,7 +49,7 @@ inputs:
   attest-config:
     description: 'Attestation config map'
   attest-name:
-    description: 'Attestation config name (default "gensbom")'
+    description: 'Attestation config name (default "valint")'
   attest-default:
     description: 'Attestation default config, options=[sigstore sigstore-github x509]'
     default: sigstore-github
@@ -59,11 +69,19 @@ inputs:
   context-dir:
     description: 'Context dir' 
   components:
-    description: 'Select sbom components groups, options=[metadata layers packages files dep] (default [metadata,layers,packages,files,dep])'
+    description: 'Select sbom components groups, options=[metadata layers packages syft files dep commits]'
+  final-artifact:
+    description: 'Mark as final artifact'
+    default: false
+  oci: 
+    description: 'Enable OCI store'
+    default: false
+  oci-repo:
+    description: 'Select OCI custom attestation repo'
 
 runs:
   using: docker
-  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/gensbom:latest 
+  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:latest
   args:
     - bom
     - ${{ inputs.type }}:${{ inputs.target }}
@@ -74,6 +92,9 @@ runs:
     - ${{ inputs.label && '--label=' }}${{ inputs.label }}
     - ${{ inputs.env && '--env=' }}${{ inputs.env }}
     - ${{ inputs.filter-regex && '--filter-regex=' }}${{ inputs.filter-regex }}
+    - ${{ inputs.filter-scope && '--filter-scope=' }}${{ inputs.filter-scope }}
+    - ${{ inputs.package-type && '--package-type=' }}${{ inputs.package-type }}
+    - ${{ inputs.package-group && '--package-group=' }}${{ inputs.package-group }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - --context-type=github
     - ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }}
@@ -89,6 +110,10 @@ runs:
     - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.context-dir && '--scribe.context-dir=' }}${{ inputs.context-dir }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
+    - ${{ inputs.final-artifact && '--final-artifact=' }}${{ inputs.final-artifact }}
+    - ${{ inputs.oci && '--oci=' }}${{ inputs.oci }}
+    - ${{ inputs.oci-repo && '--oci-repo=' }}${{ inputs.oci-repo }}
+
 
 
 branding:
