@@ -90,9 +90,8 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Context dir' 
   components:
     description: 'Select sbom components groups, options=[metadata layers packages syft files dep commits]'
-  oci: 
+  oci:
     description: 'Enable OCI store'
-    default: false
   oci-repo:
     description: 'Select OCI custom attestation repo'
 ```
@@ -263,13 +262,25 @@ Create SBOM for image built by local docker `image_name:latest` image, overwrite
 
 Custom private registry, output verbose (debug level) log output.
 
+> `DOCKER_CONFIG` environment will allow the containerized action to access the private registry.
+
 ```YAML
-- name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom@master
-  with:
-    target: 'scribesecuriy.jfrog.io/scribe-docker-local/stub_remote:latest'
-    verbose: 2
-    force: true
+env:
+  DOCKER_CONFIG: $HOME/.docker
+steps:
+  - name: Login to GitHub Container Registry
+    uses: docker/login-action@v2
+    with:
+      registry: ${{ env.REGISTRY_URL }}
+      username: ${{ secrets.REGISTRY_USERNAME }}
+      password: ${{ secrets.REGISTRY_TOKEN }}
+
+  - name: Generate cyclonedx json SBOM
+    uses: scribe-security/action-bom@master
+    with:
+      target: 'scribesecuriy.jfrog.io/scribe-docker-local/stub_remote:latest'
+      verbose: 2
+      force: true
 ```
 </details>
 
@@ -279,7 +290,7 @@ Custom private registry, output verbose (debug level) log output.
 Custom metadata added to SBOM.
 
 ```YAML
-- name: Generate cyclonedx json SBOM - add metadata - labels, envs, name
+- name: Generate cyclonedx json SBOM - add metadata - labels, envs
   id: valint_labels
   uses: scribe-security/action-bom@master
   with:
@@ -287,7 +298,6 @@ Custom metadata added to SBOM.
       verbose: 2
       format: json
       force: true
-      name: name_value
       env: test_env
       label: test_label
   env:
@@ -297,7 +307,7 @@ Custom metadata added to SBOM.
 
 
 <details>
-  <summary> Save as artifact (SBOM) </summary>
+  <summary> Save as artifact (SBOM, SLSA) </summary>
 
 Using action `OUTPUT_PATH` output argument you can access the generated SBOM and store it as an artifact.
 
@@ -697,6 +707,57 @@ valint-dir-test:
         path: |
           scribe/valint      
 ``` 
+
+</details>
+
+
+
+<details>
+  <summary> Store evidence on OCI (SBOM,SLSA) </summary>
+
+Store any evidence on any OCI registry. <br />
+Support storage for all targets and both SBOM and SLSA evidence formats.
+
+> Use input variable `format` to select between supported formats. <br />
+> Write permission to `oci-repo` is required. 
+
+```YAML
+valint-dir-test:
+  runs-on: ubuntu-latest
+  permissions:
+    id-token: write
+  env:
+    DOCKER_CONFIG: $HOME/.docker
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - uses: scribe-security/action-bom@dev
+        id: valint_attest
+        with:
+          target: busybox:latest
+          verbose: 2
+          force: true
+          format: attest
+          oci: true
+          oci-repo: ${{ env.REGISTRY_URL }}/attestations    
+``` 
+
+Following command can be used to verify a target over the OCI store.
+```yaml
+valint verify busybox:latest -vv -f --oci --oci-repo=$REGISTRY_URL/attestations
+```
+
+> Use `--input-format` to select between supported formats. <br />
+> Read permission to `oci-repo` is required. 
 
 </details>
 
