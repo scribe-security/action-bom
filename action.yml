@@ -97,7 +97,7 @@ runs:
     - ${{ inputs.filter-scope && '--filter-scope=' }}${{ inputs.filter-scope }}
     - ${{ inputs.package-type && '--package-type=' }}${{ inputs.package-type }}
     - ${{ inputs.package-group && '--package-group=' }}${{ inputs.package-group }}
-    - ${{ inputs.package-exclude-group && '--package-exclude-group=' }}${{ inputs.package-exclude-group }}
+    - ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - --context-type=github
     - ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }}
