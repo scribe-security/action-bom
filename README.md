@@ -69,6 +69,8 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Select package type'
   package-group:
     description: 'Select package group'
+  package-exclude-type:
+    description: 'Exclude package type'
   attach-regex:
     description: 'Attach files content by regex'
   force:
@@ -92,6 +94,7 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Select sbom components groups, options=[metadata layers packages syft files dep commits]'
   oci:
     description: 'Enable OCI store'
+    default: false
   oci-repo:
     description: 'Select OCI custom attestation repo'
 ```
@@ -779,3 +782,4 @@ Install valint as a tool
 ## .gitignore
 Recommended to add output directory value to your .gitignore file.
 By default add `**/scribe` to your `.gitignore`.
+
