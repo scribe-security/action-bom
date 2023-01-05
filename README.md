@@ -69,6 +69,8 @@ To overcome the limitation install tool directly - [installer](https://github.co
     description: 'Select package type'
   package-group:
     description: 'Select package group'
+  package-exclude-type:
+    description: 'Exclude package type'
   attach-regex:
     description: 'Attach files content by regex'
   force:
