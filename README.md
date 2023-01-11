@@ -109,7 +109,6 @@ To overcome the limitation install tool directly - [installer](https://github.co
   uses: scribe-security/action-bom@master
   with:
     target: 'busybox:latest'
-    verbose: 2
 ```
 
 ## Configuration
@@ -193,7 +192,6 @@ jobs:
         with:
            type: dir
            target: 'mongo-express-scm'
-           verbose: 2
            scribe-enable: true
            product-key:  ${{ secrets.product-key }}
            scribe-client-id: ${{ secrets.client-id }}
@@ -211,7 +209,6 @@ jobs:
         uses: scribe-security/action-bom@master
         with:
            target: 'mongo-express:1.0.0-alpha.4'
-           verbose: 2
            scribe-enable: true
            product-key:  ${{ secrets.product-key }}
            scribe-client-id: ${{ secrets.client-id }}
@@ -245,7 +242,7 @@ Create SBOM for remote `busybox:latest` image.
 <details>
   <summary>  Docker built image (SBOM) </summary>
 
-Create SBOM for image built by local docker `image_name:latest` image, overwrite cache.
+Create SBOM for image built by local docker `image_name:latest`.
 
 ```YAML
 - name: Generate cyclonedx json SBOM
@@ -261,7 +258,7 @@ Create SBOM for image built by local docker `image_name:latest` image, overwrite
 <details>
   <summary>  Private registry image (SBOM) </summary>
 
-Custom private registry, output verbose (debug level) log output.
+Create SBOM for image hosted by a private registry.
 
 > `DOCKER_CONFIG` environment will allow the containerized action to access the private registry.
 
@@ -280,7 +277,6 @@ steps:
     uses: scribe-security/action-bom@master
     with:
       target: 'scribesecuriy.jfrog.io/scribe-docker-local/stub_remote:latest'
-      verbose: 2
       force: true
 ```
 </details>
@@ -296,7 +292,6 @@ Custom metadata added to SBOM.
   uses: scribe-security/action-bom@master
   with:
       target: 'busybox:latest'
-      verbose: 2
       format: json
       force: true
       env: test_env
@@ -558,7 +553,6 @@ valint-busybox-test:
       uses: scribe-security/action-bom@master
       with:
           target: 'busybox:latest'
-          verbose: 2
           format: attest
           force: true
 
@@ -567,7 +561,6 @@ valint-busybox-test:
       uses: scribe-security/action-verify@master
       with:
           target: 'busybox:latest'
-          verbose: 2
 
     - uses: actions/upload-artifact@v2
       with:
@@ -600,7 +593,6 @@ valint-busybox-test:
       uses: scribe-security/action-bom@master
       with:
           target: 'busybox:latest'
-          verbose: 2
           format: attest-slsa
           force: true
 
@@ -610,7 +602,6 @@ valint-busybox-test:
       with:
           target: 'busybox:latest'
           input-format: attest-slsa
-          verbose: 2
 
     - uses: actions/upload-artifact@v2
       with:
@@ -644,7 +635,6 @@ valint-dir-test:
       with:
           type: dir
           target: '/GitHub/workspace/'
-          verbose: 2
           format: attest
           force: true
 
@@ -654,7 +644,6 @@ valint-dir-test:
       with:
           type: dir
           target: '/GitHub/workspace/'
-          verbose: 2
     
     - uses: actions/upload-artifact@v2
       with:
@@ -690,7 +679,6 @@ valint-dir-test:
       with:
           type: git
           target: '/GitHub/workspace/my_repo'
-          verbose: 2
           format: attest
           force: true
 
@@ -700,7 +688,6 @@ valint-dir-test:
       with:
           type: git
           target: '/GitHub/workspace/my_repo'
-          verbose: 2
     
     - uses: actions/upload-artifact@v3
       with:
@@ -745,7 +732,6 @@ valint-dir-test:
         id: valint_attest
         with:
           target: busybox:latest
-          verbose: 2
           force: true
           format: attest
           oci: true
@@ -754,7 +740,7 @@ valint-dir-test:
 
 Following command can be used to verify a target over the OCI store.
 ```yaml
-valint verify busybox:latest -vv -f --oci --oci-repo=$REGISTRY_URL/attestations
+valint verify busybox:latest -f --oci --oci-repo=$REGISTRY_URL/attestations
 ```
 
 > Use `--input-format` to select between supported formats. <br />
@@ -773,7 +759,7 @@ Install valint as a tool
 - name: valint run
   run: |
     valint --version
-    valint bom busybox:latest -vv
+    valint bom busybox:latest
 ``` 
 </details>
 
