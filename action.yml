@@ -98,6 +98,7 @@ runs:
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - --context-type=github
     - ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }}
+    - ${{ inputs.output-file && '--output-file=' }}${{ inputs.output-file }}
     - ${{ inputs.force && '--force=' }}${{ inputs.force }}
     - ${{ inputs.attest-name && '--attest.name=' }}${{ inputs.attest-name }}
     - ${{ inputs.attest-default && '--attest.default=' }}${{ inputs.attest-default }}
