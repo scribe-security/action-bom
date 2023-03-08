@@ -2,12 +2,12 @@
 title: Bom
 sidebar_position: 2
 ---
-# Scribe Github Action for `valint bom`
-Scribe offers GitHub Actions for embedding evidence collecting and validated integrity of your supply chain.
+# Scribe GitHub Action for `valint bom`
+Scribe offers the use of GitHub Actions to enable the embedding of evidence collection and integrity validation into your pipeline as a way to help secure your software supply chain.
 
-Use `valint bom` to collect evidence and generate an SBOM.
+`valint bom` is used to collect evidence and generate an SBOM.
 
-Further documentation [Github integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
+Further documentation [GitHub integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
 
 ## Other Actions
 * [bom](action-bom.md), [source](https://github.com/scribe-security/action-bom)
@@ -16,7 +16,7 @@ Further documentation [Github integration](https://scribe-security.netlify.app/d
 <!-- * [integrity report - action](https://github.com/scribe-security/action-report/README.md) -->
 
 ## Bom Action
-Action for `valint bom`. <br />
+Actions for `valint bom`. <br />
 The command allows users to generate and manage evidence collection process.
 - CycloneDX SBOM and SLSA provenance evidence support. 
 - Generates detailed SBOMs for images, directories, files and git repositories targets.
@@ -55,8 +55,6 @@ To overcome the limitation install tool directly - [installer](https://github.co
     default: ./scribe/valint
   output-file:
     description: 'Output result to file'
-  product-key:
-    description: 'Custom/project product key'
   label:
     description: 'Custom label'
   env:
@@ -82,8 +80,6 @@ To overcome the limitation install tool directly - [installer](https://github.co
   scribe-enable:
     description: 'Enable scribe client'
     default: false
-  scribe-client-id:
-    description: 'Scribe client id' 
   scribe-client-secret:
     description: 'Scribe access token' 
   context-dir:
@@ -128,6 +124,7 @@ Supported outputs:
 
 Select default configuration using `--attest.default` flag. <br />
 Select a custom configuration by providing `cocosign` field in the [configuration](docs/configuration.md) or custom path using `--attest.config`.
+Scribe uses the **cocosign** library we developed to deal with digital signatures signing and verification.
 
 See details [In-toto spec](https://github.com/in-toto/attestation)
 See details [attestations](docs/attestations.md)
@@ -150,9 +147,8 @@ Following are some integration examples.
   with:
     target: 'busybox:latest'
     scribe-enable: true
-    product-key:  ${{ secrets.product-key }}
-    scribe-client-id: ${{ secrets.client-id }}
-    scribe-client-secret: ${{ secrets.client-secret }}
+    scribe-client-id: ${{ secrets.client_id }}
+    scribe-client-secret: ${{ secrets.client_secret }}
 ```
 
 If you are using Github Actions as your Continuous Integration tool (CI), use these instructions to integrate Scribe into your workflows to protect your projects.
@@ -193,9 +189,8 @@ jobs:
            type: dir
            target: 'mongo-express-scm'
            scribe-enable: true
-           product-key:  ${{ secrets.product-key }}
-           scribe-client-id: ${{ secrets.client-id }}
-           scribe-client-secret: ${{ secrets.client-secret }}
+           scribe-client-id: ${{ secrets.client_id }}
+           scribe-client-secret: ${{ secrets.client_secret }}
 
       - name: Build and push remote
         uses: docker/build-push-action@v2
@@ -210,9 +205,8 @@ jobs:
         with:
            target: 'mongo-express:1.0.0-alpha.4'
            scribe-enable: true
-           product-key:  ${{ secrets.product-key }}
-           scribe-client-id: ${{ secrets.client-id }}
-           scribe-client-secret: ${{ secrets.client-secret }}
+           scribe-client-id: ${{ secrets.client_id }}
+           scribe-client-secret: ${{ secrets.client_secret }}
 
       - uses: actions/upload-artifact@v3
         with:
