@@ -95,7 +95,7 @@ inputs:
     description: Log depth level, options=[panic fatal error warning info debug trace]
   package-exclude-type:
     description: Exclude package type, options=[ruby python javascript java dpkg apkdb rpm go-mod rust binary sbom]
-  scribe-auth-audience:
+  scribe-audience:
     description: Scribe auth audience
     default: api.production.scribesecurity.com
   timeout:
@@ -134,7 +134,7 @@ runs:
     - ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }}
     - ${{ inputs.output-file && '--output-file=' }}${{ inputs.output-file }}
     - ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }}
-    - ${{ inputs.scribe-auth-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-auth-audience }}
+    - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }}
     - ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }}
     - ${{ inputs.scribe-enable && '--scribe.enable=' }}${{ inputs.scribe-enable }}
