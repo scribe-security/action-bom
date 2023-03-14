@@ -9,6 +9,9 @@ outputs:
   sbom_path:
     description: 'sbom evidence output file path'
 inputs:
+  type:
+    description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
+    default: registry
   target:
     description: Generate Software Bill Of Materials (SBOM) for container images, filesystems and git repositories
     required: true
@@ -22,7 +25,7 @@ inputs:
     default: cyclonedx-json
   output-directory:
     description: Output directory path
-    default: C:\Users\shubh\AppData\Local\cache\valint
+    default: ./scribe/valint
   output-file:
     description: Output file name
   product-key:
@@ -98,10 +101,10 @@ inputs:
     default: 120s
 runs:
   using: docker
-  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:latest
+  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
   args:
     - bom
-    - ${{ inputs.target}}
+    - ${{ inputs.type }}:${{ inputs.target }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - ${{ inputs.backoff && '--backoff=' }}${{ inputs.backoff }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
@@ -136,8 +139,6 @@ runs:
     - ${{ inputs.scribe-login-url && '--scribe.login-url=' }}${{ inputs.scribe-login-url }}
     - ${{ inputs.scribe-url && '--scribe.url=' }}${{ inputs.scribe-url }}
     - ${{ inputs.verbose && '--verbose=' }}${{ inputs.verbose }}
-
-
 
 branding:
   icon: shield
