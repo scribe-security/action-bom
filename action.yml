@@ -13,111 +13,134 @@ inputs:
     description: 'Target source type options=[docker,docker-archive, oci-archive, dir, registry, git]'
     default: registry
   target:
-    description: 'Target object name format=[<image:tag>, <dir path>, <git url>]'
+    description: Generate Software Bill Of Materials (SBOM) for container images, filesystems and git repositories
     required: true
   verbose:
-    description: 'Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug'
+    description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
     default: 1
   config:
-    description: 'Application config file'
+    description: Configuration file path
   format:
-    description: 'Sbom formatter, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa]'
+    description: Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa]
+    default: cyclonedx-json
   output-directory:
-    description: 'Report output directory'
+    description: Output directory path
     default: ./scribe/valint
   output-file:
-    description: 'Output result to file'
+    description: Output file name
   product-key:
-    description: 'Custom/project product key'
+    description: Scribe Project Key
   label:
-    description: 'Custom label'
+    description: Add Custom labels
   env:
-    description: 'Custom env'
+    description: Envrionment keys to include in sbom
   filter-regex:
-    description: 'Filter out files by regex'
+    description: Filter out files by regex
+    default: '**/*.pyc,**/.git/**'
   filter-scope:
-    description: 'Filter packages by scope'
+    description: Filter packages by scope
   package-type:
-    description: 'Select package type'
+    description: Select package type, options=[ruby python javascript java dpkg apkdb rpm go-mod rust binary sbom]
+    default: ruby,python,javascript,java,dpkg,apkdb,rpm,go-mod,rust,binary,sbom
   package-exclude-type:
     description: 'Exclude package type'
   package-group:
-    description: 'Select package group'
+    description: Select package group, options=[index install all]
   attach-regex:
-    description: 'Attach files content by regex'
+    description: Attach files content by regex
   force:
-    description: 'Force overwrite cache'
+    description: Force overwrite cache
     default: false
   attest-config:
-    description: 'Attestation config map'
-  attest-name:
-    description: 'Attestation config name (default "valint")'
+    description: Attestation config path
   attest-default:
-    description: 'Attestation default config, options=[sigstore sigstore-github x509]'
-    default: sigstore-github
+    description: Attestation default config, options=[sigstore sigstore-github x509]
+    default: sigstore
   scribe-enable:
-    description: 'Enable scribe client'
+    description: Enable scribe client
     default: false
   scribe-client-id:
-    description: 'Scribe client id' 
+    description: Scribe Client ID
   scribe-client-secret:
-    description: 'Scribe access token' 
+    description: Scribe Client Secret
   scribe-url:
-    description: 'Scribe url'
+    description: Scribe API Url
+    default: https://api.production.scribesecurity.com
   scribe-login-url:
-    description: 'Scribe auth login url' 
-  scribe-audience:
-    description: 'Scribe auth audience' 
+    description: Scribe login url
+    default: https://scribesecurity-production.us.auth0.com
   context-dir:
-    description: 'Context dir' 
+    description: Context dir
   components:
-    description: 'Select sbom components groups, options=[metadata layers packages syft files dep commits]'
-  final-artifact:
-    description: 'Mark as final artifact'
-    default: false
-  oci: 
-    description: 'Enable OCI store'
+    description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
+    default: metadata,layers,packages,syft,files,dep,commits
+  oci:
+    description: Enable OCI store
     default: false
   oci-repo:
-    description: 'Select OCI custom attestation repo'
-
+    description: Select OCI custom attestation repo
+  backoff:
+    description: Backoff duration
+    default: 15s
+  context-type:
+    description: CI context type, options=[jenkins github circleci azure gitlab travis bitbucket local]
+    default: local
+  git-branch:
+    description: Git branch in the repository
+  git-commit:
+    description: Git commit hash in the repository
+  git-tag:
+    description: Git tag in the repository
+  level:
+    description: Log depth level, options=[panic fatal error warning info debug trace]
+  package-exclude-type:
+    description: Exclude package type, options=[ruby python javascript java dpkg apkdb rpm go-mod rust binary sbom]
+  scribe-auth-audience:
+    description: Scribe auth audience
+    default: api.production.scribesecurity.com
+  timeout:
+    description: Timeout duration
+    default: 120s
 runs:
   using: docker
   image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
   args:
     - bom
     - ${{ inputs.type }}:${{ inputs.target }}
-    - --verbose=${{ inputs.verbose }}
-    - ${{ inputs.config && '--config=' }}${{ inputs.config }}
-    - ${{ inputs.format && '--format=' }}${{ inputs.format }}
-    - ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }}
-    - ${{ inputs.label && '--label=' }}${{ inputs.label }}
+    - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
+    - ${{ inputs.backoff && '--backoff=' }}${{ inputs.backoff }}
+    - ${{ inputs.components && '--components=' }}${{ inputs.components }}
     - ${{ inputs.env && '--env=' }}${{ inputs.env }}
+    - ${{ inputs.force && '--force=' }}${{ inputs.force }}
+    - ${{ inputs.format && '--format=' }}${{ inputs.format }}
+    - ${{ inputs.git-branch && '--git-branch=' }}${{ inputs.git-branch }}
+    - ${{ inputs.git-commit && '--git-commit=' }}${{ inputs.git-commit }}
+    - ${{ inputs.git-tag && '--git-tag=' }}${{ inputs.git-tag }}
+    - ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }}
+    - ${{ inputs.package-group && '--package-group=' }}${{ inputs.package-group }}
+    - ${{ inputs.package-type && '--package-type=' }}${{ inputs.package-type }}
+    - ${{ inputs.timeout && '--timeout=' }}${{ inputs.timeout }}
+    - ${{ inputs.attest-config && '--attest.config=' }}${{ inputs.attest-config }}
+    - ${{ inputs.attest-default && '--attest.default=' }}${{ inputs.attest-default }}
+    - ${{ inputs.config && '--config=' }}${{ inputs.config }}
+    - ${{ inputs.context-dir && '--context-dir=' }}${{ inputs.context-dir }}
+    - --context-type=github
     - ${{ inputs.filter-regex && '--filter-regex=' }}${{ inputs.filter-regex }}
     - ${{ inputs.filter-scope && '--filter-scope=' }}${{ inputs.filter-scope }}
-    - ${{ inputs.package-type && '--package-type=' }}${{ inputs.package-type }}
-    - ${{ inputs.package-group && '--package-group=' }}${{ inputs.package-group }}
-    - ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }}
-    - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
-    - --context-type=github
-    - ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }}
-    - ${{ inputs.force && '--force=' }}${{ inputs.force }}
-    - ${{ inputs.attest-name && '--attest.name=' }}${{ inputs.attest-name }}
-    - ${{ inputs.attest-default && '--attest.default=' }}${{ inputs.attest-default }}
-    - ${{ inputs.attest-config && '--attest.config=' }}${{ inputs.attest-config }}
-    - ${{ inputs.scribe-enable && '--scribe.enable=' }}${{ inputs.scribe-enable }}
-    - ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }}
-    - ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }}
-    - ${{ inputs.scribe-url && '--scribe.url=' }}${{ inputs.scribe-url }}
-    - ${{ inputs.scribe-login-url && '--scribe.login-url=' }}${{ inputs.scribe-login-url }}
-    - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
-    - ${{ inputs.context-dir && '--scribe.context-dir=' }}${{ inputs.context-dir }}
-    - ${{ inputs.components && '--components=' }}${{ inputs.components }}
-    - ${{ inputs.final-artifact && '--final-artifact=' }}${{ inputs.final-artifact }}
+    - ${{ inputs.label && '--label=' }}${{ inputs.label }}
+    - ${{ inputs.level && '--level=' }}${{ inputs.level }}
     - ${{ inputs.oci && '--oci=' }}${{ inputs.oci }}
     - ${{ inputs.oci-repo && '--oci-repo=' }}${{ inputs.oci-repo }}
-
-
+    - ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }}
+    - ${{ inputs.output-file && '--output-file=' }}${{ inputs.output-file }}
+    - ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }}
+    - ${{ inputs.scribe-auth-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-auth-audience }}
+    - ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }}
+    - ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }}
+    - ${{ inputs.scribe-enable && '--scribe.enable=' }}${{ inputs.scribe-enable }}
+    - ${{ inputs.scribe-login-url && '--scribe.login-url=' }}${{ inputs.scribe-login-url }}
+    - ${{ inputs.scribe-url && '--scribe.url=' }}${{ inputs.scribe-url }}
+    - ${{ inputs.verbose && '--verbose=' }}${{ inputs.verbose }}
 
 branding:
   icon: shield
