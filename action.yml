@@ -42,8 +42,6 @@ inputs:
   package-type:
     description: Select package type, options=[ruby python javascript java dpkg apkdb rpm go-mod rust binary sbom]
     default: ruby,python,javascript,java,dpkg,apkdb,rpm,go-mod,rust,binary,sbom
-  package-exclude-type:
-    description: 'Exclude package type'
   package-group:
     description: Select package group, options=[index install all]
   attach-regex:
