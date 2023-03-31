@@ -100,7 +100,7 @@ runs:
   image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
   args:
     - bom
-    - ${{ if(inputs.type) }} ${inputs.type}:${{ inputs.target }} ${{ else }} ${{ inputs.target }} ${{ endif }}
+      ${{ inputs.type &&  inputs.type':'inputs.target || inputs.target }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
     - ${{ inputs.env && '--env=' }}${{ inputs.env }}
