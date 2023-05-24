@@ -73,7 +73,7 @@ inputs:
     description: Select OCI custom attestation repo
   output-directory:
     description: Output directory path
-    default: /home/runner/.cache/valint
+    default: ./scribe/valint
   output-file:
     description: Output file name
   pipeline-name:
