@@ -9,6 +9,9 @@ outputs:
   sbom_path:
     description: sbom evidence output file path
 inputs:
+  type:
+    description: 'Target source type scheme=[docker,docker-archive, oci-archive, dir, registry, git]'
+    deprecationMessage: "Please use target fields, formated [type]:[target]:[tag]"
   target:
     description: Target object name format=[<image:tag>, <dir path>, <git url>]
     required: true
@@ -115,7 +118,7 @@ runs:
   image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
   args:
     - bom
-    - ${{ inputs.target}}
+    - ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
     - ${{ inputs.compress && '--compress=' }}${{ inputs.compress }}
