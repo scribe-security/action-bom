@@ -88,6 +88,10 @@ inputs:
   scribe-auth-audience:
     description: Scribe auth audience
     default: api.production.scribesecurity.com
+  scribe-audience:
+    description: Scribe auth audience
+    default: api.production.scribesecurity.com
+    deprecationMessage: "Please use scribe-auth-audience instead"
   scribe-client-id:
     description: Scribe Client ID
   scribe-client-secret:
@@ -146,6 +150,7 @@ runs:
     - ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }}
     - ${{ inputs.product-version && '--product-version=' }}${{ inputs.product-version }}
     - ${{ inputs.scribe-auth-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-auth-audience }}
+    - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }}
     - ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }}
     - ${{ inputs.scribe-enable && '--scribe.enable=' }}${{ inputs.scribe-enable }}
