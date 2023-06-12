@@ -9,17 +9,21 @@ outputs:
   sbom_path:
     description: sbom evidence output file path
 inputs:
-  type:
-    description: 'Target source type scheme=[docker,docker-archive, oci-archive, dir, registry, git]'
-    deprecationMessage: "Please use target fields, formated [type]:[target]:[tag]"
   target:
     description: Target object name format=[<image:tag>, <dir path>, <git url>]
     required: true
+  type:
+    description: Target source type scheme=[docker,docker-archive, oci-archive, dir, registry, git, generic]
+    deprecationMessage: Please use target fields, formated [type]:[target]:[tag]
+  scribe-audience:
+    description: Scribe auth audience
+    deprecationMessage: Please use scribe-auth-audience instead
+    default: api.production.scribesecurity.com
   attach-regex:
     description: Attach files content by regex
   components:
     description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
-    default: metadata,layers,packages,syft,files,dep,commits
+    default: metadata,layers,packages,syft,dep,commits
   compress:
     description: Compress content (generic evidence)
   force:
@@ -91,10 +95,6 @@ inputs:
   scribe-auth-audience:
     description: Scribe auth audience
     default: api.production.scribesecurity.com
-  scribe-audience:
-    description: Scribe auth audience
-    default: api.production.scribesecurity.com
-    deprecationMessage: "Please use scribe-auth-audience instead"
   scribe-client-id:
     description: Scribe Client ID
   scribe-client-secret:
@@ -107,6 +107,8 @@ inputs:
   scribe-url:
     description: Scribe API Url
     default: https://api.production.scribesecurity.com
+  structured:
+    description: Enable structured logger
   timeout:
     description: Timeout duration
     default: 120s
@@ -119,6 +121,7 @@ runs:
   args:
     - bom
     - ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }}
+    - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
     - ${{ inputs.compress && '--compress=' }}${{ inputs.compress }}
@@ -153,12 +156,12 @@ runs:
     - ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }}
     - ${{ inputs.product-version && '--product-version=' }}${{ inputs.product-version }}
     - ${{ inputs.scribe-auth-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-auth-audience }}
-    - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }}
     - ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }}
     - ${{ inputs.scribe-enable && '--scribe.enable=' }}${{ inputs.scribe-enable }}
     - ${{ inputs.scribe-login-url && '--scribe.login-url=' }}${{ inputs.scribe-login-url }}
     - ${{ inputs.scribe-url && '--scribe.url=' }}${{ inputs.scribe-url }}
+    - ${{ inputs.structured && '--structured=' }}${{ inputs.structured }}
     - ${{ inputs.timeout && '--timeout=' }}${{ inputs.timeout }}
     - ${{ inputs.verbose && '--verbose=' }}${{ inputs.verbose }}
 branding:
