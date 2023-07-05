@@ -18,7 +18,7 @@ inputs:
   scribe-audience:
     description: Scribe auth audience
     deprecationMessage: Please use scribe-auth-audience instead
-    required: false
+    default: api.production.scribesecurity.com
   attach-regex:
     description: Attach files content by regex
   author-email:
@@ -108,7 +108,7 @@ inputs:
     description: Product Version
   scribe-auth-audience:
     description: Scribe auth audience
-    required: false
+    default: api.production.scribesecurity.com
   scribe-client-id:
     description: Scribe Client ID
   scribe-client-secret:
@@ -117,10 +117,10 @@ inputs:
     description: Enable scribe client
   scribe-login-url:
     description: Scribe login url
-    default: https://scribesecurity-production.us.auth0.com
+    default: https://scribe-hub-production.us.auth0.com
   scribe-url:
     description: Scribe API Url
-    default: https://api.production.scribesecurity.com
+    default: https://airflow.scribesecurity.com
   structured:
     description: Enable structured logger
   timeout:
