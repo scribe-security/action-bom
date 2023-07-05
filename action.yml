@@ -21,6 +21,12 @@ inputs:
     default: api.production.scribesecurity.com
   attach-regex:
     description: Attach files content by regex
+  author-email:
+    description: Set author email
+  author-name:
+    description: Set author name
+  author-phone:
+    description: Set author phone
   components:
     description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
     default: metadata,layers,packages,syft,dep,commits
@@ -32,12 +38,20 @@ inputs:
     description: Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa statement-generic attest-generic]
     default: cyclonedx-json
   package-exclude-type:
-    description: Exclude package type, options=[ruby python javascript java dpkg apkdb rpm go-mod rust binary sbom]
+    description: Exclude package type, options=[ruby python javascript java dpkg apkdb rpm go-mod dotnet r-package rust binary sbom]
   package-group:
     description: Select package group, options=[index install all]
   package-type:
-    description: Select package type, options=[ruby python javascript java dpkg apkdb rpm go-mod rust binary sbom]
-    default: ruby,python,javascript,java,dpkg,apkdb,rpm,go-mod,rust,binary,sbom
+    description: Select package type, options=[ruby python javascript java dpkg apkdb rpm go-mod dotnet r-package rust binary sbom]
+    default: ruby,python,javascript,java,dpkg,apkdb,rpm,go-mod,dotnet,r-package,rust,binary,sbom
+  supplier-email:
+    description: Set supplier email
+  supplier-name:
+    description: Set supplier name
+  supplier-phone:
+    description: Set supplier phone
+  supplier-url:
+    description: Set supplier url
   app-name:
     description: Logical application name
   app-version:
@@ -45,7 +59,7 @@ inputs:
   attest-config:
     description: Attestation config path
   attest-default:
-    description: Attestation default config, options=[sigstore sigstore-github x509]
+    description: Attestation default config, options=[sigstore sigstore-github x509 x509-env]
     default: sigstore
   backoff:
     description: Backoff duration
@@ -123,6 +137,9 @@ runs:
     - ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }}
     - ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
+    - ${{ inputs.author-email && '--author-email=' }}${{ inputs.author-email }}
+    - ${{ inputs.author-name && '--author-name=' }}${{ inputs.author-name }}
+    - ${{ inputs.author-phone && '--author-phone=' }}${{ inputs.author-phone }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
     - ${{ inputs.compress && '--compress=' }}${{ inputs.compress }}
     - ${{ inputs.force && '--force=' }}${{ inputs.force }}
@@ -130,6 +147,10 @@ runs:
     - ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }}
     - ${{ inputs.package-group && '--package-group=' }}${{ inputs.package-group }}
     - ${{ inputs.package-type && '--package-type=' }}${{ inputs.package-type }}
+    - ${{ inputs.supplier-email && '--supplier-email=' }}${{ inputs.supplier-email }}
+    - ${{ inputs.supplier-name && '--supplier-name=' }}${{ inputs.supplier-name }}
+    - ${{ inputs.supplier-phone && '--supplier-phone=' }}${{ inputs.supplier-phone }}
+    - ${{ inputs.supplier-url && '--supplier-url=' }}${{ inputs.supplier-url }}
     - ${{ inputs.app-name && '--app-name=' }}${{ inputs.app-name }}
     - ${{ inputs.app-version && '--app-version=' }}${{ inputs.app-version }}
     - ${{ inputs.attest-config && '--attest.config=' }}${{ inputs.attest-config }}
