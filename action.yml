@@ -60,7 +60,6 @@ inputs:
     description: Attestation config path
   attest-default:
     description: Attestation default config, options=[sigstore sigstore-github x509 x509-env]
-    default: sigstore
   backoff:
     description: Backoff duration
     default: 15s
@@ -75,7 +74,6 @@ inputs:
     description: Environment keys to include in sbom
   filter-regex:
     description: Filter out files by regex
-    default: '**/*.pyc,**/.git/**'
   filter-scope:
     description: Filter packages by scope
   git-branch:
@@ -117,18 +115,14 @@ inputs:
     description: Enable scribe client
   scribe-login-url:
     description: Scribe login url
-    default: https://scribe-hub-production.us.auth0.com
   scribe-url:
     description: Scribe API Url
-    default: https://airflow.scribesecurity.com
   structured:
     description: Enable structured logger
   timeout:
     description: Timeout duration
-    default: 120s
   verbose:
     description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
-    default: 1
 runs:
   using: docker
   image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
