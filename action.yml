@@ -15,6 +15,7 @@ inputs:
   type:
     description: Target source type scheme=[docker,docker-archive, oci-archive, dir, registry, git, generic]
     deprecationMessage: Please use target fields, formated [type]:[target]:[tag]
+    required: false
   scribe-audience:
     description: Scribe auth audience
     deprecationMessage: Please use scribe-auth-audience instead
@@ -29,21 +30,18 @@ inputs:
     description: Set author phone
   components:
     description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
-    default: metadata,layers,packages,syft,dep,commits
   compress:
     description: Compress content (generic evidence)
   force:
     description: Force overwrite cache
   format:
     description: Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa statement-generic attest-generic]
-    default: cyclonedx-json
   package-exclude-type:
     description: Exclude package type, options=[ruby python javascript java dpkg apkdb rpm go-mod dotnet r-package rust binary sbom]
   package-group:
     description: Select package group, options=[index install all]
   package-type:
     description: Select package type, options=[ruby python javascript java dpkg apkdb rpm go-mod dotnet r-package rust binary sbom]
-    default: ruby,python,javascript,java,dpkg,apkdb,rpm,go-mod,dotnet,r-package,rust,binary,sbom
   supplier-email:
     description: Set supplier email
   supplier-name:
@@ -60,13 +58,10 @@ inputs:
     description: Attestation config path
   attest-default:
     description: Attestation default config, options=[sigstore sigstore-github x509 x509-env]
-    default: sigstore
   backoff:
     description: Backoff duration
-    default: 15s
   cache-enable:
     description: Enable local cache
-    default: true
   config:
     description: Configuration file path
   context-dir:
@@ -75,7 +70,6 @@ inputs:
     description: Environment keys to include in sbom
   filter-regex:
     description: Filter out files by regex
-    default: '**/*.pyc,**/.git/**'
   filter-scope:
     description: Filter packages by scope
   git-branch:
@@ -101,7 +95,6 @@ inputs:
     description: Pipeline name
   predicate-type:
     description: Custom Predicate type (generic evidence format)
-    default: http://scribesecurity.com/evidence/generic/v0.1
   product-key:
     description: Product Key
   product-version:
@@ -117,18 +110,14 @@ inputs:
     description: Enable scribe client
   scribe-login-url:
     description: Scribe login url
-    default: https://scribe-hub-production.us.auth0.com
   scribe-url:
     description: Scribe API Url
-    default: https://airflow.scribesecurity.com
   structured:
     description: Enable structured logger
   timeout:
     description: Timeout duration
-    default: 120s
   verbose:
     description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
-    default: 1
 runs:
   using: docker
   image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
