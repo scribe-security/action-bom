@@ -7,7 +7,7 @@ Scribe offers the use of GitHub Actions to enable the embedding of evidence coll
 
 `valint bom` is used to collect evidence and generate an SBOM.
 
-Further documentation [GitHub integration]([../github/](https://scribe-security.netlify.app/docs/ci-integrations/github/))
+Further documentation [GitHub integration](https://scribe-security.netlify.app/docs/how-to-run-scribe/ci-integrations/github/)
 
 ### Other Actions
 * [bom](action-bom), [source](https://github.com/scribe-security/action-bom)
