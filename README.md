@@ -1,21 +1,20 @@
 ---
-title: Bom
-sidebar_position: 2
+sidebar_label: "Bom"
+title: Scribe GitHub Action for `valint bom`
+sidebar_position: 1
 ---
-# Scribe GitHub Action for `valint bom`
 Scribe offers the use of GitHub Actions to enable the embedding of evidence collection and integrity validation into your pipeline as a way to help secure your software supply chain.
 
 `valint bom` is used to collect evidence and generate an SBOM.
 
-Further documentation [GitHub integration](https://scribe-security.netlify.app/docs/ci-integrations/github/)
+Further documentation [GitHub integration]([../github/](https://scribe-security.netlify.app/docs/ci-integrations/github/))
 
-## Other Actions
-* [bom](action-bom.md), [source](https://github.com/scribe-security/action-bom)
-* [verify](action-verify.md), [source](https://github.com/scribe-security/action-verify)
-* [installer](action-installer.md), [source](https://github.com/scribe-security/action-installer)
-<!-- * [integrity report - action](https://github.com/scribe-security/action-report/README.md) -->
+### Other Actions
+* [bom](action-bom), [source](https://github.com/scribe-security/action-bom)
+* [verify](action-verify), [source](https://github.com/scribe-security/action-verify)
+* [installer](action-installer), [source](https://github.com/scribe-security/action-installer)
 
-## Bom Action
+### Bom Action
 Actions for `valint bom`. <br />
 The command allows users to generate and manage evidence collection process.
 - CycloneDX SBOM and SLSA provenance evidence support. 
@@ -33,7 +32,7 @@ The command allows users to generate and manage evidence collection process.
 - Attach GitHub workflows [environment](https://docs.github.com/en/actions/learn-github-actions/environment-variables) context (git url , commit, workflow, job, run id ..).
 
 > Containerized actions limit's the ability to generate evidence on a target located outside the working directory (directory or git targets). <br />
-To overcome the limitation install tool directly - [installer](https://github.com/scribe-security/action-installer/README.md)
+To overcome the limitation install tool directly - [installer](https://github.com/scribe-security/action-installer)
 
 ### Input arguments
 ```yaml
@@ -139,13 +138,13 @@ To overcome the limitation install tool directly - [installer](https://github.co
     target: 'busybox:latest'
 ```
 
-## Configuration
+### Configuration
 
 Use default configuration path `.valint.yaml`, or provide a custom path using `--config` flag.
 
-See detailed [configuration](docs/configuration.md)
+See detailed [configuration](docs/configuration)
 
-## Attestations 
+### Attestations 
 Attestations allow you to sign and verify your targets. <br />
 Attestations allow you to connect PKI-based identities to your evidence and policy management.  <br />
 
@@ -155,15 +154,81 @@ Supported outputs:
 - In-toto attestations -Cyclonedx SBOM, SLSA Provenance (signed evidence)
 
 Select default configuration using `--attest.default` flag. <br />
-Select a custom configuration by providing `cocosign` field in the [configuration](docs/configuration.md) or custom path using `--attest.config`.
+Select a custom configuration by providing `cocosign` field in the [configuration](docs/configuration) or custom path using `--attest.config`.
 Scribe uses the **cocosign** library we developed to deal with digital signatures signing and verification.
 
 See details [In-toto spec](https://github.com/in-toto/attestation)
-See details [attestations](docs/attestations.md)
+See details [attestations](docs/attestations)
 
 >By default Github actions use `sigstore-github` flow, Github provided workload identities, this will allow using the workflow identity (`token-id` permissions is required).
 
-## Target types - `[target]`
+
+### Storing Keys in Secret Vault
+
+Github exposes secrets from its vault using envrionment varuables, you may provide these envrionments as secret to valint.
+
+> Paths names prefixed with `env://[NAME]` are read from the envrionment matching the name.
+
+<details>
+  <summary> Github Secret Vault </summary>
+
+X509 Signer enables the utilization of environments for supplying key, certificate, and CA files in order to sign and verify attestations. It is commonly employed in conjunction with Secret Vaults, where secrets are exposed through environments.
+
+>  path names prefixed with `env://[NAME]` are extracted from the environment corresponding to the specified name.
+
+
+For example the following configuration and Job.
+
+Configuraiton File, `.valint.yaml`
+```yaml
+attest:
+  cocosign:
+    signer:
+        x509:
+            enable: true
+            private: env://SIGNER_KEY
+            cert: env://SIGNER_CERT
+            ca: env://COMPANY_CA
+    verifier:
+        x509:
+            enable: true
+            cert: env://SIGNER_CERT
+            ca: env://COMPANY_CA
+```
+Job example
+```yaml
+name:  github_vault_workflow
+
+on: 
+  push:
+    tags:
+      - "*"
+
+jobs:
+  scribe-sign-verify:
+    runs-on: ubuntu-latest
+    steps:
+        uses: scribe-security/action-bom@master
+        with:
+          target: busybox:latest
+          format: attest
+        env:
+          SIGNER_KEY: ${{ secrets.SIGNER_KEY }}
+          SIGNER_CERT: ${{ secrets.SIGNER_KEY }}
+          COMPANY_CA:  ${{ secrets.COMPANY_CA }}
+
+        uses: scribe-security/action-verify@master
+        with:
+          target: busybox:latest
+          input-format: attest
+        env:
+          SIGNER_CERT: ${{ secrets.SIGNER_KEY }}
+          COMPANY_CA:  ${{ secrets.COMPANY_CA }}
+```
+
+</details>
+
+### Target types - `[target]`
 ---
 Target types are types of artifacts produced and consumed by your supply chain.
 Using supported targets, you can collect evidence and verify compliance on a range of artifacts.
@@ -195,7 +260,7 @@ Each storer can be used to store, find and download evidence, unifying all the s
 | scribe | Evidence is stored on scribe service | scribe credentials |
 | OCI | Evidence is stored on a remote OCI registry | access to a OCI registry |
 
-## Scribe Evidence store
+### Scribe Evidence store
 Scribe evidence store allows you store evidence using scribe Service.
 
 Related Flags:
@@ -210,7 +275,7 @@ Integrating Scribe Hub with your environment requires the following credentials 
 * **Client ID**
 * **Client Secret**
 
-<img src='../../img/ci/integrations-secrets.jpg' alt='Scribe Integration Secrets' width='70%' min-width='400px'/>
+<img src='../../../../../img/ci/integrations-secrets.jpg' alt='Scribe Integration Secrets' width='70%' min-width='400px'/>
 
 * Add the credentials according to the [GitHub instructions](https://docs.github.com/en/actions/security-guides/encrypted-secrets/ "GitHub Instructions"). Based on the code example below, be sure to call the secrets **clientid** for the **client_id**, and **clientsecret** for the **client_secret**.
 
@@ -227,14 +292,14 @@ on:
       - "*"
 
 jobs:
-  scribe-report-test:
+  scribe-sign-verify:
     runs-on: ubuntu-latest
     steps:
 
         uses: scribe-security/action-bom@master
         with:
           target: [target]
-          format: [attest, statement, attest-slsa, statement-slsa]
+          format: [attest, statement, attest-slsa, statement-slsa, attest-generic, statement-generic]
           scribe-enable: true
           scribe-client-id: ${{ secrets.clientid }}
           scribe-client-secret: ${{ secrets.clientsecret }}
@@ -242,13 +307,13 @@ jobs:
         uses: scribe-security/action-verify@master
         with:
           target: [target]
-          format: [attest, statement, attest-slsa, statement-slsa]
+          format: [attest, statement, attest-slsa, statement-slsa, attest-generic, statement-generic]
           scribe-enable: true
           scribe-client-id: ${{ secrets.clientid }}
           scribe-client-secret: ${{ secrets.clientsecret }}
 ```
 
-## OCI Evidence store
+### OCI Evidence store
 Valint supports both storage and verification flows for `attestations` and `statement` objects utilizing OCI registry as an evidence store.
 
 Using OCI registry as an evidence store allows you to upload, download and verify evidence across your supply chain in a seamless manner.
@@ -275,7 +340,7 @@ on:
       - "*"
 
 jobs:
-  scribe-report-test:
+  scribe-sign-verify:
     runs-on: ubuntu-latest
     steps:
 
@@ -290,7 +355,7 @@ jobs:
         uses: scribe-security/action-bom@master
         with:
           target: [target]
-          format: [attest, statement, attest-slsa, statement-slsa]
+          format: [attest, statement, attest-slsa, statement-slsa, attest-generic, statement-generic]
           oci: true
           oci-repo: [oci_repo]
 
@@ -298,13 +363,13 @@ jobs:
         uses: scribe-security/action-verify@master
         with:
           target: [target]
-          format: [attest, statement, attest-slsa, statement-slsa]
+          format: [attest, statement, attest-slsa, statement-slsa, attest-generic, statement-generic]
           oci: true
           oci-repo: [oci_repo]
 ```
 
 
-## Basic examples
+### Basic examples
 <details>
   <summary>  Public registry image (SBOM) </summary>
 
@@ -382,6 +447,29 @@ Custom metadata added to SBOM.
 ```
 </details>
 
+<details>
+  <summary>  NTIA Custom metadata (SBOM) </summary>
+
+Custom NTIA metadata added to SBOM.
+
+```YAML
+- name: Generate cyclonedx json SBOM - add NTIA metadata
+  id: valint_ntia
+  uses: scribe-security/action-bom@master
+  with:
+      target: 'busybox:latest'
+      format: json
+      force: true
+      author-name: bob
+      author-email: bob@company.com
+      author-phone: 000
+      supplier-name: alice
+      supplier-url: company2.com
+      supplier-email: alice@company2.com
+      supplier-phone: 001
+```
+</details>
+
 
 <details>
   <summary> Save as artifact (SBOM, SLSA) </summary>
@@ -425,6 +513,28 @@ Using action `OUTPUT_PATH` output argument you can access the generated SLSA pro
   with:
     target: 'busybox:latest'
     format: statement-slsa
+
+- uses: actions/upload-artifact@v2
+  with:
+    name: provenance
+    path: ${{ steps.valint_slsa_statement.outputs.OUTPUT_PATH }}
+``` 
+</details>
+
+<details>
+  <summary> Save Generic statement as artifact (SLSA) </summary>
+
+Using action `OUTPUT_PATH` output argument you can access the generated generic statement and store it as an artifact.
+
+> Use action `output-file: <my_custom_path>` input argument to set a custom output path.
+
+```YAML
+- name: Generate SLSA provenance statement
+  id: valint_slsa_statement
+  uses: scribe-security/action-bom@master
+  with:
+    target: './temp.go'
+    format: statement-generic
 
 - uses: actions/upload-artifact@v2
   with:
@@ -573,6 +683,28 @@ job_example:
     with:
         target: 'busybox:latest'
         format: attest-slsa
+``` 
+</details>
+
+<details>
+  <summary> Attest target (Generic) </summary>
+
+Create and sign SLSA targets. <br />
+By default the `sigstore-github` flow is used, GitHub workload identity and Sigstore (Fulcio, Rekor).
+
+>Default attestation config **Required** `id-token` permission access.
+
+```YAML
+job_example:
+  runs-on: ubuntu-latest
+  permissions:
+    id-token: write
+  steps:
+    - name: valint attest
+    uses: scribe-security/action-bom@master
+    with:
+        target: './file.go'
+        format: attest-generic
 ``` 
 </details>
 
