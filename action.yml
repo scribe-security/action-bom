@@ -50,6 +50,12 @@ inputs:
     description: Set supplier phone
   supplier-url:
     description: Set supplier url
+  app-name:
+    description: Logical application name
+    deprecationMessage: Flag is no longer supported
+  app-version:
+    description: Logical application version
+    deprecationMessage: Flag is no longer supported
   attest-config:
     description: Attestation config path
   attest-default:
@@ -125,7 +131,7 @@ inputs:
     description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
 runs:
   using: docker
-  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
+  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:latest
   args:
     - bom
     - ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }}
