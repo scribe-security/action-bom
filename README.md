@@ -26,7 +26,7 @@ The command allows users to generate sbom and third party evidence.
 - Attach any external reports to your SBOM.
 - Signing - Generate In-Toto Attestation.
 - Support Sigstore keyless verifying as well as **[GitHub workload identity](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect)**.
-- Attach GitHub workflows **[environment](https://docs.github.com/en/actions/learn-github-actions/environment-variables)** context (git url , commit, workflow, job, run id ..).
+- Attach GitHub workflows **[environment](https://docs.github.com/en/actions/learn-environment-variables)** context (git url , commit, workflow, job, run id ..).
 
 > Containerized actions limit's the ability to generate evidence on a target located outside the working directory (directory or git targets). <br />
 To overcome the limitation install tool directly - **[installer](https://github.com/scribe-security/actions/tree/master/installer)**.
@@ -59,7 +59,7 @@ To overcome the limitation install tool directly - **[installer](https://github.
   force:
     description: Force overwrite cache
   format:
-    description: Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json predicate-cyclonedx-json attest-slsa statement-slsa predicate-slsa statement-generic attest-generic]
+    description: Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json attest-slsa statement-slsa statement-generic attest-generic]
   package-exclude-type:
     description: Exclude package type, options=[ruby python javascript java dpkg apkdb rpm go-mod dotnet r-package rust binary sbom]
   package-group:
@@ -74,18 +74,30 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Set supplier phone
   supplier-url:
     description: Set supplier url
+  allow-expired:
+    description: Allow expired certs
   attest-config:
     description: Attestation config path
   attest-default:
     description: Attestation default config, options=[sigstore sigstore-github x509 x509-env]
   backoff:
     description: Backoff duration
+  ca:
+    description: x509 CA Chain path
   cache-enable:
     description: Enable local cache
+  cert:
+    description: x509 Cert path
   config:
     description: Configuration file path
   context-dir:
     description: Context dir
+  crl:
+    description: x509 CRL path
+  crl-full-chain:
+    description: Enable Full chain CRL verfication
+  disable-crl:
+    description: Disable certificate revocation verificatoin
   env:
     description: Environment keys to include in sbom
   filter-regex:
@@ -98,10 +110,16 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Git commit hash in the repository
   git-tag:
     description: Git tag in the repository
+  key:
+    description: x509 Private key path
   label:
     description: Add Custom labels
   level:
     description: Log depth level, options=[panic fatal error warning info debug trace]
+  log-context:
+    description: Attach context to all logs
+  log-file:
+    description: Output log to file
   oci:
     description: Enable OCI store
   oci-repo:
@@ -113,6 +131,8 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Output file name
   pipeline-name:
     description: Pipeline name
+  policy-args:
+    description: Policy arguments
   predicate-type:
     description: Custom Predicate type (generic evidence format)
   product-key:
@@ -121,7 +141,6 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Product Version
   scribe-auth-audience:
     description: Scribe auth audience
-    required: false
   scribe-client-id:
     description: Scribe Client ID
   scribe-client-secret:
@@ -149,10 +168,12 @@ To overcome the limitation install tool directly - **[installer](https://github.
 ### Usage
 ```yaml
 - name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom@master
+  uses: scribe-security/action-bom@v0.4.2
   with:
     target: 'busybox:latest'
 ```
+
+> Use `master` instead of tag to automatically pull latest version.
 
 ### Configuration
 If you prefer using a custom configuration file instead of specifying arguments directly, you have two choices. You can either place the configuration file in the default path, which is `.valint.yaml`, or you can specify a custom path using the `config` argument.
@@ -196,6 +217,7 @@ For example the following configuration and Job.
 Configuration File, `.valint.yaml`
 ```yaml
 attest:
+  default: "" # Set custom configuration
   cocosign:
     signer:
         x509:
@@ -284,7 +306,7 @@ Related Flags:
 >* `scribe-enable`
 
 ### Before you begin
-Integrating Scribe Hub with your environment requires the following credentials that are found in the **Integrations** page. (In your **[Scribe Hub](https://prod.hub.scribesecurity.com/ "Scribe Hub Link")** go to **integrations**)
+Integrating Scribe Hub with your environment requires the following credentials that are found in the **Integrations** page. (In your **[Scribe Hub](https://scribehub.scribesecurity.com/ "Scribe Hub Link")** go to **integrations**)
 
 * **Client ID**
 * **Client Secret**
@@ -387,6 +409,23 @@ jobs:
           oci-repo: [oci_repo]
 ```
 </details>
+
+### Running action as non root user
+By default action runs in its own pid namespace as the root user.
+You change users you can use the `USERID` and `USERNAME` env
+
+```YAML
+- name: Generate cyclonedx json SBOM
+  uses: scribe-security/action-bom@master
+  with:
+    target: 'busybox:latest'
+    format: json
+  env:
+    USERID: 1001
+    USERNAME: runner
+``` 
+
+
 
 ### Basic examples
 <details>
@@ -885,7 +924,7 @@ It's recommended to add output directory value to your .gitignore file.
 By default add `**/scribe` to your `.gitignore`.
 
 ## Other Actions
-* [bom](action-bom), [source](https://github.com/scribe-security/action-bom)
-* [slsa](action-slsa), [source](https://github.com/scribe-security/action-slsa)
-* [verify](action-verify), [source](https://github.com/scribe-security/action-verify)
-* [installer](action-installer), [source](https://github.com/scribe-security/action-installer)
+* [bom](action-bom.md), [source](https://github.com/scribe-security/action-bom)
+* [slsa](action-slsa.md), [source](https://github.com/scribe-security/action-slsa)
+* [verify](action-verify.md), [source](https://github.com/scribe-security/action-verify)
+* [installer](action-installer.md), [source](https://github.com/scribe-security/action-installer)
