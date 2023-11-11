@@ -116,7 +116,6 @@ inputs:
     description: Pipeline name
   policy-args:
     description: Policy arguments
-    default: '[]'
   predicate-type:
     description: Custom Predicate type (generic evidence format)
     default: http://scribesecurity.com/evidence/generic/v0.1
