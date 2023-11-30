@@ -147,6 +147,8 @@ runs:
     - shell: bash
       run: curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint
     - shell: bash
+      run: export PATH=$PATH:$HOME/.scribe/bin
+    - shell: bash
       run: |
         valint bom ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }} \
         ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }} \
