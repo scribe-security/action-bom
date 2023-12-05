@@ -146,6 +146,11 @@ runs:
   steps:
     - shell: bash
       run: curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint
+
+    - shell: bash
+      if: runner.os == 'Windows'
+      run: |
+        echo "HERE"
     - shell: bash
       run: |
         $HOME/.scribe/bin/valint bom ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }} \
