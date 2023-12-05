@@ -150,11 +150,11 @@ runs:
     - shell: bash
       if: runner.os == 'Windows' && inputs.type == ''
       run: |
-        echo "WINDOWS_OVERRIDE_REGISTRY=registry" >> "$GITHUB_ENV"
+        echo "WINDOWS_OVERRIDE_TYPE=registry" >> "$GITHUB_ENV"
 
     - shell: bash
       run: |
-        $HOME/.scribe/bin/valint bom ${{ inputs.type }}${{ (inputs.type || env.WINDOWS_OVERRIDE_REGISTRY} && ':' }}${{ inputs.target }} \
+        $HOME/.scribe/bin/valint bom ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }} \
         ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }} \
         ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }} \
         ${{ inputs.author-email && '--author-email=' }}${{ inputs.author-email }} \
