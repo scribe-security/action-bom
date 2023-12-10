@@ -137,7 +137,7 @@ runs:
   using: composite
   steps:
     - shell: bash
-      run: curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint
+      run: curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint -D
     - shell: bash
       if: runner.os == 'Windows' && inputs.type == ''
       run: |
