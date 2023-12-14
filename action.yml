@@ -72,6 +72,8 @@ inputs:
     description: x509 CRL path
   crl-full-chain:
     description: Enable Full chain CRL verfication
+  deliverable:
+    description: Mark as deliverable, options=[true, false]
   disable-crl:
     description: Disable certificate revocation verificatoin
   env:
@@ -107,6 +109,8 @@ inputs:
     description: Output file name
   pipeline-name:
     description: Pipeline name
+  platform:
+    description: Select target platform, examples=windows/armv6, arm64 ..)
   policy-args:
     description: Policy arguments
   predicate-type:
@@ -137,13 +141,78 @@ runs:
   using: composite
   steps:
     - shell: bash
-      run: curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint
+      run: |2-
+        if [ ! -e "$HOME/.scribe/bin/valint" ]; then
+        	curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint:v0.4.2
+        fi
     - shell: bash
       if: runner.os == 'Windows' && inputs.type == ''
-      run: |
-        echo "OVERRIDE_DEFAULT_IMAGE_SOURCE=registry" >> "$GITHUB_ENV"
+      run: echo "OVERRIDE_DEFAULT_IMAGE_SOURCE=registry" >> "$GITHUB_ENV"
     - shell: bash
-      run: '$HOME/.scribe/bin/valint  bom ${{ inputs.type }}${{ inputs.type && '':'' }}${{ inputs.target }} ${{ inputs.scribe-audience && ''--scribe.auth.audience='' }}${{ inputs.scribe-audience }} ${{ inputs.attach-regex && ''--attach-regex='' }}${{ inputs.attach-regex }} ${{ inputs.author-email && ''--author-email='' }}${{ inputs.author-email }} ${{ inputs.author-name && ''--author-name='' }}${{ inputs.author-name }} ${{ inputs.author-phone && ''--author-phone='' }}${{ inputs.author-phone }} ${{ inputs.components && ''--components='' }}${{ inputs.components }} ${{ inputs.compress && ''--compress='' }}${{ inputs.compress }} ${{ inputs.force && ''--force='' }}${{ inputs.force }} ${{ inputs.format && ''--format='' }}${{ inputs.format }} ${{ inputs.package-exclude-type && ''--package-exclude-type='' }}${{ inputs.package-exclude-type }} ${{ inputs.package-group && ''--package-group='' }}${{ inputs.package-group }} ${{ inputs.package-type && ''--package-type='' }}${{ inputs.package-type }} ${{ inputs.supplier-email && ''--supplier-email='' }}${{ inputs.supplier-email }} ${{ inputs.supplier-name && ''--supplier-name='' }}${{ inputs.supplier-name }} ${{ inputs.supplier-phone && ''--supplier-phone='' }}${{ inputs.supplier-phone }} ${{ inputs.supplier-url && ''--supplier-url='' }}${{ inputs.supplier-url }} ${{ inputs.allow-expired && ''--allow-expired='' }}${{ inputs.allow-expired }} ${{ inputs.attest-config && ''--attest.config='' }}${{ inputs.attest-config }} ${{ inputs.attest-default && ''--attest.default='' }}${{ inputs.attest-default }} ${{ inputs.backoff && ''--backoff='' }}${{ inputs.backoff }} ${{ inputs.ca && ''--ca='' }}${{ inputs.ca }} ${{ inputs.cache-enable && ''--cache-enable='' }}${{ inputs.cache-enable }} ${{ inputs.cert && ''--cert='' }}${{ inputs.cert }} ${{ inputs.config && ''--config='' }}${{ inputs.config }} ${{ inputs.context-dir && ''--context-dir='' }}${{ inputs.context-dir }} --context-type=github ${{ inputs.crl && ''--crl='' }}${{ inputs.crl }} ${{ inputs.crl-full-chain && ''--crl-full-chain='' }}${{ inputs.crl-full-chain }} ${{ inputs.disable-crl && ''--disable-crl='' }}${{ inputs.disable-crl }} ${{ inputs.env && ''--env='' }}${{ inputs.env }} ${{ inputs.filter-regex && ''--filter-regex='' }}${{ inputs.filter-regex }} ${{ inputs.filter-scope && ''--filter-scope='' }}${{ inputs.filter-scope }} ${{ inputs.git-branch && ''--git-branch='' }}${{ inputs.git-branch }} ${{ inputs.git-commit && ''--git-commit='' }}${{ inputs.git-commit }} ${{ inputs.git-tag && ''--git-tag='' }}${{ inputs.git-tag }} ${{ inputs.key && ''--key='' }}${{ inputs.key }} ${{ inputs.label && ''--label='' }}${{ inputs.label }} ${{ inputs.level && ''--level='' }}${{ inputs.level }} ${{ inputs.log-context && ''--log-context='' }}${{ inputs.log-context }} ${{ inputs.log-file && ''--log-file='' }}${{ inputs.log-file }} ${{ inputs.oci && ''--oci='' }}${{ inputs.oci }} ${{ inputs.oci-repo && ''--oci-repo='' }}${{ inputs.oci-repo }} ${{ inputs.output-directory && ''--output-directory='' }}${{ inputs.output-directory }} ${{ inputs.output-file && ''--output-file='' }}${{ inputs.output-file }} ${{ inputs.pipeline-name && ''--pipeline-name='' }}${{ inputs.pipeline-name }} ${{ inputs.policy-args && ''--policy-args='' }}${{ inputs.policy-args }} ${{ inputs.predicate-type && ''--predicate-type='' }}${{ inputs.predicate-type }} ${{ inputs.product-key && ''--product-key='' }}${{ inputs.product-key }} ${{ inputs.product-version && ''--product-version='' }}${{ inputs.product-version }} ${{ inputs.scribe-auth-audience && ''--scribe.auth.audience='' }}${{ inputs.scribe-auth-audience }} ${{ inputs.scribe-client-id && ''--scribe.client-id='' }}${{ inputs.scribe-client-id }} ${{ inputs.scribe-client-secret && ''--scribe.client-secret='' }}${{ inputs.scribe-client-secret }} ${{ inputs.scribe-enable && ''--scribe.enable='' }}${{ inputs.scribe-enable }} ${{ inputs.scribe-login-url && ''--scribe.login-url='' }}${{ inputs.scribe-login-url }} ${{ inputs.scribe-url && ''--scribe.url='' }}${{ inputs.scribe-url }} ${{ inputs.structured && ''--structured='' }}${{ inputs.structured }} ${{ inputs.timeout && ''--timeout='' }}${{ inputs.timeout }} ${{ inputs.verbose && ''--verbose='' }}${{ inputs.verbose }} '
+      run: |-
+        $HOME/.scribe/bin/valint \
+        bom \
+        ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }} \
+        ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }} \
+        ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }} \
+        ${{ inputs.author-email && '--author-email=' }}${{ inputs.author-email }} \
+        ${{ inputs.author-name && '--author-name=' }}${{ inputs.author-name }} \
+        ${{ inputs.author-phone && '--author-phone=' }}${{ inputs.author-phone }} \
+        ${{ inputs.components && '--components=' }}${{ inputs.components }} \
+        ${{ inputs.compress && '--compress=' }}${{ inputs.compress }} \
+        ${{ inputs.force && '--force=' }}${{ inputs.force }} \
+        ${{ inputs.format && '--format=' }}${{ inputs.format }} \
+        ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }} \
+        ${{ inputs.package-group && '--package-group=' }}${{ inputs.package-group }} \
+        ${{ inputs.package-type && '--package-type=' }}${{ inputs.package-type }} \
+        ${{ inputs.supplier-email && '--supplier-email=' }}${{ inputs.supplier-email }} \
+        ${{ inputs.supplier-name && '--supplier-name=' }}${{ inputs.supplier-name }} \
+        ${{ inputs.supplier-phone && '--supplier-phone=' }}${{ inputs.supplier-phone }} \
+        ${{ inputs.supplier-url && '--supplier-url=' }}${{ inputs.supplier-url }} \
+        ${{ inputs.allow-expired && '--allow-expired=' }}${{ inputs.allow-expired }} \
+        ${{ inputs.attest-config && '--attest.config=' }}${{ inputs.attest-config }} \
+        ${{ inputs.attest-default && '--attest.default=' }}${{ inputs.attest-default }} \
+        ${{ inputs.backoff && '--backoff=' }}${{ inputs.backoff }} \
+        ${{ inputs.ca && '--ca=' }}${{ inputs.ca }} \
+        ${{ inputs.cache-enable && '--cache-enable=' }}${{ inputs.cache-enable }} \
+        ${{ inputs.cert && '--cert=' }}${{ inputs.cert }} \
+        ${{ inputs.config && '--config=' }}${{ inputs.config }} \
+        ${{ inputs.context-dir && '--context-dir=' }}${{ inputs.context-dir }} \
+        --context-type=github \
+        ${{ inputs.crl && '--crl=' }}${{ inputs.crl }} \
+        ${{ inputs.crl-full-chain && '--crl-full-chain=' }}${{ inputs.crl-full-chain }} \
+        ${{ inputs.deliverable && '--deliverable=' }}${{ inputs.deliverable }} \
+        ${{ inputs.disable-crl && '--disable-crl=' }}${{ inputs.disable-crl }} \
+        ${{ inputs.env && '--env=' }}${{ inputs.env }} \
+        ${{ inputs.filter-regex && '--filter-regex=' }}${{ inputs.filter-regex }} \
+        ${{ inputs.filter-scope && '--filter-scope=' }}${{ inputs.filter-scope }} \
+        ${{ inputs.git-branch && '--git-branch=' }}${{ inputs.git-branch }} \
+        ${{ inputs.git-commit && '--git-commit=' }}${{ inputs.git-commit }} \
+        ${{ inputs.git-tag && '--git-tag=' }}${{ inputs.git-tag }} \
+        ${{ inputs.key && '--key=' }}${{ inputs.key }} \
+        ${{ inputs.label && '--label=' }}${{ inputs.label }} \
+        ${{ inputs.level && '--level=' }}${{ inputs.level }} \
+        ${{ inputs.log-context && '--log-context=' }}${{ inputs.log-context }} \
+        ${{ inputs.log-file && '--log-file=' }}${{ inputs.log-file }} \
+        ${{ inputs.oci && '--oci=' }}${{ inputs.oci }} \
+        ${{ inputs.oci-repo && '--oci-repo=' }}${{ inputs.oci-repo }} \
+        ${{ inputs.output-directory && '--output-directory=' }}${{ inputs.output-directory }} \
+        ${{ inputs.output-file && '--output-file=' }}${{ inputs.output-file }} \
+        ${{ inputs.pipeline-name && '--pipeline-name=' }}${{ inputs.pipeline-name }} \
+        ${{ inputs.platform && '--platform=' }}${{ inputs.platform }} \
+        ${{ inputs.policy-args && '--policy-args=' }}${{ inputs.policy-args }} \
+        ${{ inputs.predicate-type && '--predicate-type=' }}${{ inputs.predicate-type }} \
+        ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }} \
+        ${{ inputs.product-version && '--product-version=' }}${{ inputs.product-version }} \
+        ${{ inputs.scribe-auth-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-auth-audience }} \
+        ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }} \
+        ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }} \
+        ${{ inputs.scribe-enable && '--scribe.enable=' }}${{ inputs.scribe-enable }} \
+        ${{ inputs.scribe-login-url && '--scribe.login-url=' }}${{ inputs.scribe-login-url }} \
+        ${{ inputs.scribe-url && '--scribe.url=' }}${{ inputs.scribe-url }} \
+        ${{ inputs.structured && '--structured=' }}${{ inputs.structured }} \
+        ${{ inputs.timeout && '--timeout=' }}${{ inputs.timeout }} \
+        ${{ inputs.verbose && '--verbose=' }}${{ inputs.verbose }}
 branding:
   icon: shield
   color: green
