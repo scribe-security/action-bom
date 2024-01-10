@@ -36,14 +36,6 @@ To overcome the limitation install tool directly - **[installer](https://github.
   target:
     description: Target object name format=[<image:tag>, <dir path>, <git url>]
     required: true
-  type:
-    description: Target source type scheme=[docker,docker-archive, oci-archive, dir, registry, git, generic]
-    deprecationMessage: Please use target fields, formated [type]:[target]:[tag]
-    required: false
-  scribe-audience:
-    description: Scribe auth audience
-    deprecationMessage: Please use scribe-auth-audience instead
-    required: false
   attach-regex:
     description: Attach files content by regex
   author-email:
@@ -96,6 +88,8 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: x509 CRL path
   crl-full-chain:
     description: Enable Full chain CRL verfication
+  deliverable:
+    description: Mark as deliverable, options=[true, false]
   disable-crl:
     description: Disable certificate revocation verificatoin
   env:
@@ -147,8 +141,6 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Scribe Client Secret
   scribe-enable:
     description: Enable scribe client
-  scribe-login-url:
-    description: Scribe login url
   scribe-url:
     description: Scribe API Url
   structured:
@@ -166,11 +158,20 @@ To overcome the limitation install tool directly - **[installer](https://github.
 ```
 
 ### Usage
+Containerized action can be used on Linux runners as following
 ```yaml
 - name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom@v0.4.2
+  uses: scribe-security/action-bom@v1.0.0
   with:
     target: 'busybox:latest'
+```
+
+Composite Action can be used on Linux or Windows runners as following
+```yaml
+- name: Generate cyclonedx json SBOM
+  uses: scribe-security/action-bom-cli@v1.0.0
+  with:
+    target: 'hello-world:latest'
 ```
 
 > Use `master` instead of tag to automatically pull latest version.
@@ -250,7 +251,7 @@ jobs:
           format: attest
         env:
           SIGNER_KEY: ${{ secrets.SIGNER_KEY }}
-          SIGNER_CERT: ${{ secrets.SIGNER_KEY }}
+          SIGNER_CERT: ${{ secrets.SIGNER_CERT }}
           COMPANY_CA:  ${{ secrets.COMPANY_CA }}
 
         uses: scribe-security/action-verify@master
@@ -258,7 +259,7 @@ jobs:
           target: busybox:latest
           input-format: attest
         env:
-          SIGNER_CERT: ${{ secrets.SIGNER_KEY }}
+          SIGNER_CERT: ${{ secrets.SIGNER_CERT }}
           COMPANY_CA:  ${{ secrets.COMPANY_CA }}
 ```
 
@@ -411,8 +412,7 @@ jobs:
 </details>
 
 ### Running action as non root user
-By default action runs in its own pid namespace as the root user.
-You change users you can use the `USERID` and `USERNAME` env
+By default, the action runs in its own pid namespace as the root user. You can change the user by setting specific `USERID` and `USERNAME` environment variables.
 
 ```YAML
 - name: Generate cyclonedx json SBOM
@@ -425,9 +425,61 @@ You change users you can use the `USERID` and `USERNAME` env
     USERNAME: runner
 ``` 
 
+<details>
+  <summary> Non root user with HIGH UID/GID </summary>
+By default, the action runs in its own pid namespace as the root user. If the user uses a high UID or GID, you must specify all the following environment variables. You can change the user by setting specific `USERID` and `USERNAME` variables. Additionally, you may group the process by setting specific `GROUPID` and `GROUP` variables.
 
+```YAML
+- name: Generate cyclonedx json SBOM
+  uses: scribe-security/action-bom@master
+  with:
+    target: 'busybox:latest'
+    format: json
+  env:
+    USERID: 888000888
+    USERNAME: my_user
+    GROUPID: 777000777
+    GROUP: my_group
+``` 
+</details>
 
 ### Basic examples
+<details>
+  <summary>  Attach sbom to product </summary>
+
+Create SBOM for remote `busybox:latest` image and attach it to a specific product version.
+
+```YAML
+- name: Generate cyclonedx json SBOM attached to a product
+  uses: scribe-security/action-bom@master
+  with:
+    target: 'busybox:latest'
+    product-key: my_product
+    product-version: 3
+    format: json
+``` 
+
+</details>
+
+<details>
+  <summary>  Set Git sbom as deliverable artifact </summary>
+
+Create SBOM for Deliverable  `mongo-express/mongo-express` Git repository.
+
+```YAML
+- name: Generate cyclonedx json SBOM for a deliverable Git repo
+  uses: scribe-security/action-bom@master
+  with:
+    target: git:https://github.com/mongo-express/mongo-express.git
+    product-key: my_product
+    product-version: 3
+    deliverable: true
+    format: json
+``` 
+
+</details>
+
+
 <details>
   <summary>  Public registry image </summary>
 
