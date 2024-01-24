@@ -1,4 +1,4 @@
-name: Scribe evidence generator
+name: Scribe SBOM evidence generator
 description: Collect, Create and Store evidence for artifacts (SBOMs,SLSA provenance) or any third-party tools.
 author: Mikey Strauss
 outputs:
@@ -33,8 +33,6 @@ inputs:
     description: Set author phone
   components:
     description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
-  compress:
-    description: Compress content (generic evidence)
   force:
     description: Force overwrite cache
   format:
@@ -154,7 +152,6 @@ runs:
     - ${{ inputs.author-name && '--author-name=' }}${{ inputs.author-name }}
     - ${{ inputs.author-phone && '--author-phone=' }}${{ inputs.author-phone }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
-    - ${{ inputs.compress && '--compress=' }}${{ inputs.compress }}
     - ${{ inputs.force && '--force=' }}${{ inputs.force }}
     - ${{ inputs.format && '--format=' }}${{ inputs.format }}
     - ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }}
