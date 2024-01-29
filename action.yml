@@ -1,4 +1,4 @@
-name: Scribe evidence generator
+name: Scribe SBOM evidence generator
 description: Collect, Create and Store evidence for artifacts (SBOMs,SLSA provenance) or any third-party tools.
 author: Mikey Strauss
 outputs:
@@ -33,8 +33,6 @@ inputs:
     description: Set author phone
   components:
     description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
-  compress:
-    description: Compress content (generic evidence)
   force:
     description: Force overwrite cache
   format:
@@ -82,7 +80,7 @@ inputs:
   disable-crl:
     description: Disable certificate revocation verificatoin
   env:
-    description: Environment keys to include in sbom
+    description: Environment keys to include in evidence
   filter-regex:
     description: Filter out files by regex
   filter-scope:
@@ -116,14 +114,14 @@ inputs:
     description: Pipeline name
   platform:
     description: Select target platform, examples=windows/armv6, arm64 ..)
-  policy-args:
-    description: Policy arguments
   predicate-type:
     description: Custom Predicate type (generic evidence format)
   product-key:
     description: Product Key
   product-version:
     description: Product Version
+  rule-args:
+    description: Policy arguments
   scribe-auth-audience:
     description: Scribe auth audience
   scribe-client-id:
@@ -144,7 +142,7 @@ inputs:
     description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
 runs:
   using: docker
-  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:v1.0.0
+  image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:v1.1.0
   args:
     - bom
     - ${{ inputs.type }}${{ inputs.type && ':' }}${{ inputs.target }}
@@ -154,7 +152,6 @@ runs:
     - ${{ inputs.author-name && '--author-name=' }}${{ inputs.author-name }}
     - ${{ inputs.author-phone && '--author-phone=' }}${{ inputs.author-phone }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
-    - ${{ inputs.compress && '--compress=' }}${{ inputs.compress }}
     - ${{ inputs.force && '--force=' }}${{ inputs.force }}
     - ${{ inputs.format && '--format=' }}${{ inputs.format }}
     - ${{ inputs.package-exclude-type && '--package-exclude-type=' }}${{ inputs.package-exclude-type }}
@@ -196,10 +193,10 @@ runs:
     - ${{ inputs.output-file && '--output-file=' }}${{ inputs.output-file }}
     - ${{ inputs.pipeline-name && '--pipeline-name=' }}${{ inputs.pipeline-name }}
     - ${{ inputs.platform && '--platform=' }}${{ inputs.platform }}
-    - ${{ inputs.policy-args && '--policy-args=' }}${{ inputs.policy-args }}
     - ${{ inputs.predicate-type && '--predicate-type=' }}${{ inputs.predicate-type }}
     - ${{ inputs.product-key && '--product-key=' }}${{ inputs.product-key }}
     - ${{ inputs.product-version && '--product-version=' }}${{ inputs.product-version }}
+    - ${{ inputs.rule-args && '--rule-args=' }}${{ inputs.rule-args }}
     - ${{ inputs.scribe-auth-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-auth-audience }}
     - ${{ inputs.scribe-client-id && '--scribe.client-id=' }}${{ inputs.scribe-client-id }}
     - ${{ inputs.scribe-client-secret && '--scribe.client-secret=' }}${{ inputs.scribe-client-secret }}
