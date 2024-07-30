@@ -135,7 +135,7 @@ runs:
   image: docker://scribesecuriy.jfrog.io/scribe-docker-public-local/valint:dev-latest
   args:
     - bom
-    - ${{ inputs.target}}
+    - ${{ inputs.target }}
     - ${{ inputs.attach-regex && '--attach-regex=' }}${{ inputs.attach-regex }}
     - ${{ inputs.attest-config && '--attest.config=' }}${{ inputs.attest-config }}
     - ${{ inputs.attest-default && '--attest.default=' }}${{ inputs.attest-default }}
