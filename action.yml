@@ -27,12 +27,14 @@ inputs:
     description: Set author name
   author-phone:
     description: Set author phone
+  base-image:
+    description: Base image for the target
   ca:
     description: x509 CA Chain path
   cert:
     description: x509 Cert path
   components:
-    description: Select sbom components groups, options=[metadata layers packages syft files dep commits]
+    description: Select sbom components groups, options=[metadata layers packages syft files dep commits base_image]
   crl:
     description: x509 CRL path
   crl-full-chain:
@@ -48,7 +50,7 @@ inputs:
   force:
     description: Force overwrite cache
   format:
-    description: Evidence format, options=[cyclonedx-json cyclonedx-xml attest-cyclonedx-json statement-cyclonedx-json attest-slsa statement-slsa statement-generic attest-generic]
+    description: Evidence format, options=[json statement attest]
   git-auth:
     description: 'Git repository authentication info, [format: ''username:password'']'
   git-branch:
@@ -99,6 +101,8 @@ inputs:
     description: Environment keys to include in evidence
   gate:
     description: Policy Gate name
+  input:
+    description: Input Evidence target, format (<parser>:<file> or <scheme>:<name>:<tag>)
   label:
     description: Add Custom labels
   level:
@@ -148,6 +152,7 @@ runs:
     - ${{ inputs.author-email && '--author-email=' }}${{ inputs.author-email }}
     - ${{ inputs.author-name && '--author-name=' }}${{ inputs.author-name }}
     - ${{ inputs.author-phone && '--author-phone=' }}${{ inputs.author-phone }}
+    - ${{ inputs.base-image && '--base-image=' }}${{ inputs.base-image }}
     - ${{ inputs.ca && '--ca=' }}${{ inputs.ca }}
     - ${{ inputs.cert && '--cert=' }}${{ inputs.cert }}
     - ${{ inputs.components && '--components=' }}${{ inputs.components }}
@@ -185,6 +190,7 @@ runs:
     - ${{ inputs.deliverable && '--deliverable=' }}${{ inputs.deliverable }}
     - ${{ inputs.env && '--env=' }}${{ inputs.env }}
     - ${{ inputs.gate && '--gate=' }}${{ inputs.gate }}
+    - ${{ inputs.input && '--input=' }}${{ inputs.input }}
     - ${{ inputs.label && '--label=' }}${{ inputs.label }}
     - ${{ inputs.level && '--level=' }}${{ inputs.level }}
     - ${{ inputs.log-context && '--log-context=' }}${{ inputs.log-context }}
