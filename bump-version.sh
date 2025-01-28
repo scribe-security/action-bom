@@ -11,4 +11,4 @@ git add action.yml || true
 git commit -m "bump version" || true
 git fetch origin master
 git merge --no-edit -s ours origin/master || true
-git push -f origin prep_release/$version || true
+#git push -f origin prep_release/$version || true
