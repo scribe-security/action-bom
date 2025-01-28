@@ -83,6 +83,8 @@ inputs:
     description: Include SLSA Provenance evidence
   pubkey:
     description: Public key path
+  skip-confirmation:
+    description: Skip Sigstore Confirmation
   supplier-email:
     description: Set supplier email
   supplier-name:
@@ -180,6 +182,7 @@ runs:
     - ${{ inputs.platform && '--platform=' }}${{ inputs.platform }}
     - ${{ inputs.provenance && '--provenance=' }}${{ inputs.provenance }}
     - ${{ inputs.pubkey && '--pubkey=' }}${{ inputs.pubkey }}
+    - ${{ inputs.skip-confirmation && '--skip-confirmation=' }}${{ inputs.skip-confirmation }}
     - ${{ inputs.supplier-email && '--supplier-email=' }}${{ inputs.supplier-email }}
     - ${{ inputs.supplier-name && '--supplier-name=' }}${{ inputs.supplier-name }}
     - ${{ inputs.supplier-phone && '--supplier-phone=' }}${{ inputs.supplier-phone }}
