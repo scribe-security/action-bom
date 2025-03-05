@@ -173,7 +173,7 @@ To overcome the limitation install tool directly - **[installer](https://github.
 Containerized action can be used on Linux runners as following
 ```yaml
 - name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom@v1.5.15
+  uses: scribe-security/action-bom@v1.5.18
   with:
     target: 'busybox:latest'
 ```
@@ -181,7 +181,7 @@ Containerized action can be used on Linux runners as following
 Composite Action can be used on Linux or Windows runners as following
 ```yaml
 - name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom-cli@v1.5.15
+  uses: scribe-security/action-bom-cli@v1.5.18
   with:
     target: 'hello-world:latest'
 ```
@@ -319,6 +319,47 @@ jobs:
 ```
 
 </details>
+
+### Mapping the DOCKER_CONFIG Environment Variable
+
+When using a job's Docker daemon to pull private images, you might need to log in to your private registry before running **valint**. To ensure that the containerized action `action-bom` can access your private image, set `DOCKER_CONFIG` to a directory in your workflow that is accessible for mapping.
+
+Below is an example configuration:
+
+```yaml
+env:
+  DOCKER_CONFIG: ${{ github.workspace }}/.docker
+
+steps:
+  - name: Login to GitHub Container Registry
+    uses: docker/login-action@v2
+    with:
+      registry: ${{ env.REGISTRY_URL }}
+      username: ${{ secrets.REGISTRY_USERNAME }}
+      password: ${{ secrets.REGISTRY_TOKEN }}
+
+  - name: Generate cyclonedx json SBOM
+    uses: scribe-security/action-bom@master
+    with:
+      target: 'scribesecurity/example:latest'
+```
+
+Alternatively, you can use uncontainerized actions directly:
+
+```yaml
+- name: Login to GitHub Container Registry
+  uses: docker/login-action@v2
+  with:
+    registry: ${{ env.REGISTRY_URL }}
+    username: ${{ secrets.REGISTRY_USERNAME }}
+    password: ${{ secrets.REGISTRY_TOKEN }}
+
+- name: Generate cyclonedx json SBOM
+  uses: scribe-security/action-bom-cli@master
+  with:
+    target: 'scribesecurity/example:latest'
+    format: json
+```
 
 
 ### Running action as non root user
@@ -464,7 +505,7 @@ Create SBOM for image hosted by a private registry.
 
 ```YAML
 env:
-  DOCKER_CONFIG: $HOME/.docker
+  DOCKER_CONFIG: ${{ github.workspace }}/.docker
 steps:
   - name: Login to GitHub Container Registry
     uses: docker/login-action@v2
@@ -477,7 +518,7 @@ steps:
     uses: scribe-security/action-bom@master
     with:
       target: 'scribesecurity/example:latest'
-      force: true
+      
 ```
 </details>
 
