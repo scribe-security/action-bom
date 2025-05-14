@@ -68,11 +68,11 @@ inputs:
   oci-repo:
     description: Select OCI custom attestation repo
   package-exclude-type:
-    description: Exclude package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua]
+    description: Exclude package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
   package-group:
     description: Select package group, options=[index install all]
   package-type:
-    description: Select package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua]
+    description: Select package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
   pass:
     description: Private key password
   payload:
@@ -104,7 +104,7 @@ inputs:
   gate:
     description: Policy Gate name
   input:
-    description: Input Evidence target, format (<parser>:<file> or <scheme>:<name>:<tag>)
+    description: Input Evidence target, format (\<parser>:\<file> or \<scheme>:\<name>:\<tag>)
   label:
     description: Add Custom labels
   level:
@@ -144,7 +144,7 @@ inputs:
     description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
 runs:
   using: docker
-  image: docker://scribesecurity/valint:v1.5.18
+  image: docker://scribesecurity/valint:v1.5.19
   args:
     - bom
     - ${{ inputs.target }}
