@@ -14,7 +14,7 @@ Further documentation **[GitHub integration](../../../integrating-scribe/ci-inte
 
 ### Bom Action
 The command allows users to generate sbom and third party evidence.
-- CycloneDX 1.4 SBOM support. 
+- CycloneDX 1.5 SBOM support. 
 - Generates detailed SBOMs for images, directories, files and git repositories targets.
 - Store and manage evidence on Scribe service.
 - Attach evidence to any OCI registry.
