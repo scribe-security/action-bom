@@ -89,11 +89,11 @@ To overcome the limitation install tool directly - **[installer](https://github.
   oci-repo:
     description: Select OCI custom attestation repo
   package-exclude-type:
-    description: Exclude package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua]
+    description: Exclude package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
   package-group:
     description: Select package group, options=[index install all]
   package-type:
-    description: Select package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua]
+    description: Select package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
   pass:
     description: Private key password
   payload:
@@ -104,6 +104,8 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Include SLSA Provenance evidence
   pubkey:
     description: Public key path
+  skip-confirmation:
+    description: Skip Sigstore Confirmation
   supplier-email:
     description: Set supplier email
   supplier-name:
@@ -120,8 +122,10 @@ To overcome the limitation install tool directly - **[installer](https://github.
     description: Mark as deliverable, options=[true, false]
   env:
     description: Environment keys to include in evidence
-  gate:
+  gate-name:
     description: Policy Gate name
+  gate-type:
+    description: Policy Gate type
   input:
     description: Input Evidence target, format (\<parser>:\<file> or \<scheme>:\<name>:\<tag>)
   label:
@@ -173,7 +177,7 @@ To overcome the limitation install tool directly - **[installer](https://github.
 Containerized action can be used on Linux runners as following
 ```yaml
 - name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom@v1.5.15
+  uses: scribe-security/action-bom@v2.0.1
   with:
     target: 'busybox:latest'
 ```
@@ -181,7 +185,7 @@ Containerized action can be used on Linux runners as following
 Composite Action can be used on Linux or Windows runners as following
 ```yaml
 - name: Generate cyclonedx json SBOM
-  uses: scribe-security/action-bom-cli@v1.5.15
+  uses: scribe-security/action-bom-cli@v2.0.1
   with:
     target: 'hello-world:latest'
 ```
@@ -319,6 +323,47 @@ jobs:
 ```
 
 </details>
+
+### Mapping the DOCKER_CONFIG Environment Variable
+
+When using a job's Docker daemon to pull private images, you might need to log in to your private registry before running **valint**. To ensure that the containerized action `action-bom` can access your private image, set `DOCKER_CONFIG` to a directory in your workflow that is accessible for mapping.
+
+Below is an example configuration:
+
+```yaml
+env:
+  DOCKER_CONFIG: ${{ github.workspace }}/.docker
+
+steps:
+  - name: Login to GitHub Container Registry
+    uses: docker/login-action@v2
+    with:
+      registry: ${{ env.REGISTRY_URL }}
+      username: ${{ secrets.REGISTRY_USERNAME }}
+      password: ${{ secrets.REGISTRY_TOKEN }}
+
+  - name: Generate cyclonedx json SBOM
+    uses: scribe-security/action-bom@master
+    with:
+      target: 'scribesecurity/example:latest'
+```
+
+Alternatively, you can use uncontainerized actions directly:
+
+```yaml
+- name: Login to GitHub Container Registry
+  uses: docker/login-action@v2
+  with:
+    registry: ${{ env.REGISTRY_URL }}
+    username: ${{ secrets.REGISTRY_USERNAME }}
+    password: ${{ secrets.REGISTRY_TOKEN }}
+
+- name: Generate cyclonedx json SBOM
+  uses: scribe-security/action-bom-cli@master
+  with:
+    target: 'scribesecurity/example:latest'
+    format: json
+```
 
 
 ### Running action as non root user
@@ -464,7 +509,7 @@ Create SBOM for image hosted by a private registry.
 
 ```YAML
 env:
-  DOCKER_CONFIG: $HOME/.docker
+  DOCKER_CONFIG: ${{ github.workspace }}/.docker
 steps:
   - name: Login to GitHub Container Registry
     uses: docker/login-action@v2
@@ -477,7 +522,7 @@ steps:
     uses: scribe-security/action-bom@master
     with:
       target: 'scribesecurity/example:latest'
-      force: true
+      
 ```
 </details>
 
