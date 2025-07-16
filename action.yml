@@ -43,6 +43,8 @@ inputs:
     description: Git clone depth
   disable-crl:
     description: Disable certificate revocation verificatoin
+  filter-purl:
+    description: Filter out purls by regex
   filter-regex:
     description: Filter out files by regex
   filter-scope:
@@ -68,11 +70,11 @@ inputs:
   oci-repo:
     description: Select OCI custom attestation repo
   package-exclude-type:
-    description: Exclude package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
+    description: Exclude package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix gem conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
   package-group:
     description: Select package group, options=[index install all]
   package-type:
-    description: Select package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
+    description: Select package type, options=[ruby python javascript java dpkg apk rpm go dotnet r rust binary sbom nix gem conan alpm cocoapods swift dart elixir php erlang github portage haskell kernel wordpress lua bitnami terraform]
   pass:
     description: Private key password
   payload:
@@ -146,7 +148,7 @@ inputs:
     description: Log verbosity level [-v,--verbose=1] = info, [-vv,--verbose=2] = debug
 runs:
   using: docker
-  image: docker://scribesecurity/valint:v2.0.2
+  image: docker://scribesecurity/valint:v2.0.3
   args:
     - bom
     - ${{ inputs.target }}
@@ -164,6 +166,7 @@ runs:
     - ${{ inputs.crl-full-chain && '--crl-full-chain=' }}${{ inputs.crl-full-chain }}
     - ${{ inputs.depth && '--depth=' }}${{ inputs.depth }}
     - ${{ inputs.disable-crl && '--disable-crl=' }}${{ inputs.disable-crl }}
+    - ${{ inputs.filter-purl && '--filter-purl=' }}${{ inputs.filter-purl }}
     - ${{ inputs.filter-regex && '--filter-regex=' }}${{ inputs.filter-regex }}
     - ${{ inputs.filter-scope && '--filter-scope=' }}${{ inputs.filter-scope }}
     - ${{ inputs.force && '--force=' }}${{ inputs.force }}
